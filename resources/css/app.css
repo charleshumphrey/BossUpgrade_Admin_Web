@@ -1,0 +1,173 @@
+@import "@fortawesome/fontawesome-free/css/all.css";
+@import "animate.css";
+
+@import "./_navbar.css";
+@import "./main.css";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+    font-family: "Poppins-Regular";
+    src: url("../../public/build/fonts/Poppins-Regular.ttf");
+}
+@font-face {
+    font-family: "Poppins-Thin";
+    src: url("../../public/build/fonts/Poppins-Thin.ttf");
+}
+@font-face {
+    font-family: "Poppins-Bold";
+    src: url("../../public/build/fonts/Poppins-Bold.ttf");
+}
+@font-face {
+    font-family: "Poppins-Italic";
+    src: url("../../public/build/fonts/Poppins-Italic.ttf");
+}
+@font-face {
+    font-family: "Bungee";
+    src: url("../../public/build/fonts/Bungee-Regular.ttf");
+}
+
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+.clip-path-polygon {
+    clip-path: polygon(0 0, 100% 0, 100% 85%, 0% 100%);
+}
+.login-left-image {
+    background-image: url("../../public/build/assets/images/restobar.jpg");
+}
+.active {
+    margin-left: 0.3rem;
+    border-radius: 0.2rem;
+    color: white;
+    font-weight: bold;
+}
+.unactive {
+    color: gray;
+}
+#profile-box {
+    align-self: center;
+}
+
+.display-block {
+    display: block;
+}
+#metrics-container {
+}
+
+.metrics-cards {
+    padding: 1.5rem 1.25rem;
+    background-color: white;
+    flex-grow: 1;
+    flex-basis: 220px;
+    border-radius: 0.25rem;
+    margin: 0.4rem;
+}
+
+/* Small devices (portrait tablets and large phones) */
+@media only screen and (max-width: 600px) {
+    #sidebar {
+        display: none;
+        position: absolute;
+        height: 100vh;
+    }
+    main {
+        height: 100vh;
+    }
+    #burger-icon {
+        display: flex;
+    }
+    #upper-right {
+        justify-content: space-between;
+    }
+}
+
+/* Medium devices(landscape tablets) */
+@media only screen and (max-width: 768px) {
+    #sidebar {
+        overflow: visible;
+        width: auto;
+    }
+    #burger-icon-container {
+        display: block;
+    }
+    .appname {
+        display: none;
+    }
+    .nav-links {
+        flex-direction: column;
+        padding: 0.9rem;
+    }
+    .nav-links p {
+        font-size: 0.6rem;
+        font-weight: 500;
+    }
+    .nav-icons {
+        margin: 0;
+    }
+    .active {
+        border: none;
+        margin-left: 0px;
+    }
+}
+
+/* burger_icon style */
+
+#checkbox {
+    display: none;
+    margin: 0px;
+}
+
+#burger-icon {
+    position: relative;
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    transition-duration: 0.3s;
+}
+
+.bars {
+    width: 2rem;
+    height: 4px;
+    background-color: rgb(0, 0, 0);
+    border-radius: 5px;
+    transition-duration: 0.3s;
+}
+#checkbox:checked + #burger-icon #bar2 {
+    transform: translateY(14px) rotate(60deg);
+    margin-left: 0;
+    transform-origin: right;
+    transition-duration: 0.3s;
+    z-index: 2;
+}
+#checkbox:checked + #burger-icon #bar1 {
+    transform: translateY(28px) rotate(-60deg);
+    transition-duration: 0.3s;
+    transform-origin: left;
+    z-index: 1;
+}
+#checkbox:checked + #burger-icon {
+    transform: rotate(-90deg);
+}
+.menu-list li.active > a {
+    --tw-bg-opacity: 1;
+    background-color: rgb(71 71 71 / var(--tw-bg-opacity));
+}
+.menu-list li a {
+    color: whitesmoke;
+}
+.menu-list li a:hover {
+    --tw-bg-opacity: 1;
+    background-color: rgb(71 71 71 / var(--tw-bg-opacity));
+}
+.menu-list li ul a {
+    background-color: #5d5d5d;
+}
