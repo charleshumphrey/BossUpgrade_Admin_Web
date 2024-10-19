@@ -2,9 +2,11 @@
 
 use App\Http\Controllers\ArchiveController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\FAQController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\MenuItemsController;
 use App\Http\Controllers\OrdersController;
+use App\Http\Controllers\PromotionsController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\StaffController;
 use Illuminate\Support\Facades\Route;
@@ -189,3 +191,35 @@ Route::get(
 )->name('archive.index');
 
 Route::delete('/archive-menu-item/{id}', [MenuItemsController::class, 'archiveMenuItem'])->name('menu-items.archive');
+
+//FAQs
+Route::get(
+    '/faq',
+    [FAQController::class, 'index']
+)->name('faq.index');
+
+Route::post(
+    '/faq/store',
+    [FAQController::class, 'store']
+)->name('faq.store');
+
+Route::delete(
+    '/faqs/{id}',
+    [FAQController::class, 'destroy']
+)->name('faqs.destroy');
+
+//Promotions
+Route::get(
+    '/promotions',
+    [PromotionsController::class, 'index']
+)->name('promotions.index');
+
+Route::post(
+    '/promotions/store',
+    [PromotionsController::class, 'store']
+)->name('promotions.store');
+
+Route::delete(
+    '/promotions/{key}',
+    [PromotionsController::class, 'destroy']
+)->name('promotions.destroy');

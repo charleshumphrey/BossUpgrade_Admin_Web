@@ -72,20 +72,20 @@
             </a>
         </li>
         <li>
-            <a href="{{ route('for_delivery_orders.paginated') }}">
-                <span class="icon"><i class="fa-solid fa-truck-fast"></i></span>
+            <a href="{{ route('faq.index') }}">
+                <span class="icon"><i class="fa-solid fa-circle-question"></i></span>
                 <span class="menu-item-label">FAQs</span>
             </a>
         </li>
         <li>
-            <a href="{{ route('for_delivery_orders.paginated') }}">
-                <span class="icon"><i class="fa-solid fa-truck-fast"></i></span>
+            <a href="{{ route('promotions.index') }}">
+                <span class="icon"><i class="fa-solid fa-rectangle-ad"></i></span>
                 <span class="menu-item-label">Promotions</span>
             </a>
         </li>
         <li>
             <a href="{{ route('for_delivery_orders.paginated') }}">
-                <span class="icon"><i class="fa-solid fa-truck-fast"></i></span>
+                <span class="icon"><i class="fa-solid fa-comment-dots"></i></i></span>
                 <span class="menu-item-label">Feedbacks</span>
             </a>
         </li>

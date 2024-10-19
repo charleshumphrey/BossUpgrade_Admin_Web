@@ -242,9 +242,31 @@ class FirebaseService
 
     public function updateMenuItem($menuId, $data)
     {
-        // Reference to the specific menu item in the database
         $menuItemRef = $this->database->getReference('menu/' . $menuId);
-        // Update the menu item data
+
         $menuItemRef->update($data);
+    }
+
+    public function insertData($table, $data)
+    {
+        return $this->database->getReference($table)->push($data);
+    }
+
+    public function getData($table)
+    {
+        return $this->database->getReference($table)->getValue();
+    }
+
+    public function deleteData($table, $id)
+    {
+        return $this->database->getReference($table . '/' . $id)->remove();
+    }
+
+    public function getPromotions()
+    {
+        $promotionsRef = $this->database->getReference('promotions');
+        $promotions = $promotionsRef->getValue();
+
+        return $promotions;
     }
 }

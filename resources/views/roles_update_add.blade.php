@@ -123,12 +123,6 @@
                                 <input type="checkbox" name="permissions[manage_menu]" id="manage_menu" value=true>
                                 <label for="manage_menu" class="text-gray-600">Manage Menu Items</label>
                             </div>
-
-                            <div>
-                                <input type="checkbox" name="permissions[manage_orders]" id="manage_orders" value=true>
-                                <label for="manage_orders" class="text-gray-600">Manage Orders</label>
-                            </div>
-
                             <div>
                                 <input type="checkbox" name="permissions[manage_category]" id="manage_category" value=true>
                                 <label for="manage_category" class="text-gray-600">Manage Category</label>
@@ -136,6 +130,34 @@
                             <div>
                                 <input type="checkbox" name="permissions[manage_archives]" id="manage_archives" value=true>
                                 <label for="manage_archives" class="text-gray-600">Manage Archives</label>
+                            </div>
+                            <div>
+                                <input type="checkbox" name="permissions[manage_pending_orders]" id="manage_pending_orders" value=true>
+                                <label for="manage_pending_orders" class="text-gray-600">Manage Pending Orders</label>
+                            </div>
+                            <div>
+                                <input type="checkbox" name="permissions[manage_confirmed_orders]" id="manage_confirmed_orders" value=true>
+                                <label for="manage_confirmed_orders" class="text-gray-600">Manage Confirmed Orders</label>
+                            </div>
+                            <div>
+                                <input type="checkbox" name="permissions[manage_on_preparation_orders]" id="manage_on_preparation_orders" value=true>
+                                <label for="manage_on_preparation_orders" class="text-gray-600">Manage On Preparation Orders</label>
+                            </div>
+                            <div>
+                                <input type="checkbox" name="permissions[manage_for_delivery_orders]" id="manage_for_delivery_orders" value=true>
+                                <label for="manage_for_delivery_orders" class="text-gray-600">Manage For Delivery Orders</label>
+                            </div>
+                            <div>
+                                <input type="checkbox" name="permissions[manage_faqs]" id="manage_faqs" value=true>
+                                <label for="manage_faqs" class="text-gray-600">Manage FAQs</label>
+                            </div>
+                            <div>
+                                <input type="checkbox" name="permissions[manage_promotions]" id="manage_promotions" value=true>
+                                <label for="manage_promotions" class="text-gray-600">Manage Promotions</label>
+                            </div>
+                            <div>
+                                <input type="checkbox" name="permissions[manage_feedback]" id="manage_feedback" value=true>
+                                <label for="manage_feedback" class="text-gray-600">Manage Feedbacks</label>
                             </div>
                         </div>
                     </div>
