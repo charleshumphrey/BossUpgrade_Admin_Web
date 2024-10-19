@@ -1,7 +1,6 @@
 import { initializeApp } from "firebase/app";
 import { getDatabase, ref, get, child } from "firebase/database";
 
-// Your Firebase configuration
 const firebaseConfig = {
     apiKey: "AIzaSyDtsmGee-3Uj6ZkCMiBlpqBAm67-K4jrp8",
     authDomain: "bossupgrade-101.firebaseapp.com",
@@ -13,19 +12,16 @@ const firebaseConfig = {
     measurementId: "G-28ED8WK9K7",
 };
 
-// Initialize Firebase
 const app = initializeApp(firebaseConfig);
 
-// Get a reference to the database
 const database = getDatabase(app);
 
 function getMetrics() {
-    // References to the relevant nodes
     const usersRef = ref(database, "users");
     const menuRef = ref(database, "menu");
     const ordersRef = ref(database, "orders");
 
-    // Fetch the number of users
+    // Get the number of users
     get(usersRef)
         .then((snapshot) => {
             if (snapshot.exists()) {
@@ -38,7 +34,7 @@ function getMetrics() {
         })
         .catch((error) => console.error("Error fetching users:", error));
 
-    // Fetch the number of menu items
+    // Get number of menu items
     get(menuRef)
         .then((snapshot) => {
             if (snapshot.exists()) {
@@ -52,14 +48,44 @@ function getMetrics() {
         })
         .catch((error) => console.error("Error fetching menu items:", error));
 
-    // Fetch the number of orders
+    // Get number of completed orders
     get(ordersRef)
         .then((snapshot) => {
             if (snapshot.exists()) {
-                const orderCount = snapshot.size || snapshot.numChildren();
+                let ratedCount = 0;
+
+                snapshot.forEach((orderSnapshot) => {
+                    const status = orderSnapshot.val().status;
+                    if (status === "pending") {
+                        ratedCount++;
+                    }
+                });
+
                 document.querySelector(
                     ".metrics-cards:nth-child(3) p:nth-child(2)"
-                ).textContent = orderCount;
+                ).textContent = ratedCount;
+            } else {
+                console.log("No orders found");
+            }
+        })
+        .catch((error) => console.error("Error fetching orders:", error));
+
+    // Get number of completed orders
+    get(ordersRef)
+        .then((snapshot) => {
+            if (snapshot.exists()) {
+                let ratedCount = 0;
+
+                snapshot.forEach((orderSnapshot) => {
+                    const status = orderSnapshot.val().status;
+                    if (status === "rated") {
+                        ratedCount++;
+                    }
+                });
+
+                document.querySelector(
+                    ".metrics-cards:nth-child(4) p:nth-child(2)"
+                ).textContent = ratedCount;
             } else {
                 console.log("No orders found");
             }

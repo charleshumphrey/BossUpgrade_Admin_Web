@@ -1,4 +1,5 @@
 <div class="menu is-menu-main py-2 bg-black-erie">
+    <p class="menu-label">General</p>
     <ul class="menu-list">
         <li class="active">
             <a href="{{ route('dashboard') }}">
@@ -41,15 +42,51 @@
             </a>
         </li>
         <li class="--set-active-profile-html">
-            <a href="{{ route('orders.paginated') }}">
-                <span class="icon"><i class="mdi mdi-account-circle"></i></span>
-                <span class="menu-item-label">Orders</span>
-            </a>
-        </li>
-        <li class="--set-active-profile-html">
             <a href="{{ route('archive.index') }}">
                 <span class="icon"><i class="mdi mdi-package-down"></i></span>
                 <span class="menu-item-label">Archives</span>
+            </a>
+        </li>
+        <li>
+            <a href="{{ route('pending_orders.paginated') }}">
+                <span class="icon"><i class="fa-solid fa-clock"></i></span>
+                <span class="menu-item-label">Pending Orders</span>
+            </a>
+        </li>
+        <li>
+            <a href="{{ route('confirmed_orders.paginated') }}">
+                <span class="icon"><i class="fa-solid fa-square-check"></i></i></span>
+                <span class="menu-item-label">Confirmed Orders</span>
+            </a>
+        </li>
+        <li>
+            <a href="{{ route('on_preparation_orders.paginated') }}">
+                <span class="icon"><span class="mdi mdi-grill-outline"></span></span>
+                <span class="menu-item-label">On Preparation Orders</span>
+            </a>
+        </li>
+        <li>
+            <a href="{{ route('for_delivery_orders.paginated') }}">
+                <span class="icon"><i class="fa-solid fa-truck-fast"></i></span>
+                <span class="menu-item-label">For Delivery Orders</span>
+            </a>
+        </li>
+        <li>
+            <a href="{{ route('for_delivery_orders.paginated') }}">
+                <span class="icon"><i class="fa-solid fa-truck-fast"></i></span>
+                <span class="menu-item-label">FAQs</span>
+            </a>
+        </li>
+        <li>
+            <a href="{{ route('for_delivery_orders.paginated') }}">
+                <span class="icon"><i class="fa-solid fa-truck-fast"></i></span>
+                <span class="menu-item-label">Promotions</span>
+            </a>
+        </li>
+        <li>
+            <a href="{{ route('for_delivery_orders.paginated') }}">
+                <span class="icon"><i class="fa-solid fa-truck-fast"></i></span>
+                <span class="menu-item-label">Feedbacks</span>
             </a>
         </li>
     </ul>

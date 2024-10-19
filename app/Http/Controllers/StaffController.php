@@ -27,25 +27,21 @@ class StaffController extends Controller
     {
         $database = $this->firebaseService->getDatabase();
 
-        // Fetch staff data
         $staffSnapshot = $database->getReference('staff')->getValue();
-        // Fetch roles data
         $rolesSnapshot = $database->getReference('roles')->getValue();
 
-        // Check if staffSnapshot exists
         if ($staffSnapshot) {
             $staffCollection = collect($staffSnapshot)->map(function ($staff, $id) use ($rolesSnapshot) {
-                // Add the role name to each staff member
+
                 $staff['id'] = $id;
                 $roleId = $staff['roleId'];
                 $staff['roleName'] = isset($rolesSnapshot[$roleId]) ? $rolesSnapshot[$roleId]['name'] : 'Unknown Role';
                 return $staff;
             });
 
-            // Sort staff by created_at
+
             $sortedStaff = $staffCollection->sortByDesc('created_at');
 
-            // Pagination
             $currentPage = LengthAwarePaginator::resolveCurrentPage();
             $perPage = 10;
             $currentPageItems = $sortedStaff->slice(($currentPage - 1) * $perPage, $perPage)->all();
@@ -151,6 +147,6 @@ class StaffController extends Controller
         $database = $this->firebaseService->getDatabase();
         $database->getReference('staff/' . $id)->remove();
 
-        return redirect()->route('staff.index')->with('success', 'Staff member deleted successfully!');
+        return redirect()->route('staff.index')->with('success', 'Staff member removed successfully!');
     }
 }

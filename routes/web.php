@@ -29,6 +29,8 @@ Route::get('/change_password', function () {
     return view('change-password');
 })->name('change-password');
 
+
+
 //menu items
 Route::get(
     '/menu_items',
@@ -45,10 +47,26 @@ Route::delete(
     [MenuItemsController::class, 'destroy']
 )->name('delete-menu-item');
 
+Route::get(
+    '/edit-menu-item/{menuId}',
+    [MenuItemsController::class, 'edit']
+)->name('menu-items.edit');
+
+Route::put(
+    '/edit-menu-item/{menuId}',
+    [MenuItemsController::class, 'update']
+)->name('menu-items.update');
+
+
 Route::post(
     '/store_menu_items',
     [MenuItemsController::class, 'store']
 )->name('menu-items.store');
+
+Route::post(
+    '/menu-items/archive/{menuId}',
+    [MenuItemsController::class, 'archive']
+)->name('menu-items.archive');
 
 //category
 Route::get(
@@ -68,9 +86,54 @@ Route::delete(
 
 //Orders
 route::get(
-    '/orders',
-    [OrdersController::class, 'paginatedData']
-)->name('orders.paginated');
+    '/orders/pending',
+    [OrdersController::class, 'showPendingOrders']
+)->name('pending_orders.paginated');
+
+route::get(
+    '/orders/{orderId}/order_details',
+    [OrdersController::class, 'showOrderDetails']
+)->name('order_details.show');
+
+route::get(
+    '/orders/confirmed',
+    [OrdersController::class, 'showConfirmedOrders']
+)->name('confirmed_orders.paginated');
+
+route::get(
+    '/orders/on_preparation',
+    [OrdersController::class, 'showPreparingOrders']
+)->name('on_preparation_orders.paginated');
+
+route::get(
+    '/orders/for_delivery',
+    [OrdersController::class, 'showforDeliveryOrders']
+)->name('for_delivery_orders.paginated');
+
+route::get(
+    '/orders/delivered',
+    [OrdersController::class, 'showDeliveredOrders']
+)->name('delivered_orders.paginated');
+
+Route::patch(
+    '/orders/{orderId}/confirm',
+    [OrdersController::class, 'confirmOrder']
+)->name('orders.confirm');
+
+Route::patch(
+    '/orders/{orderId}/prepare',
+    [OrdersController::class, 'prepareOrder']
+)->name('orders.prepare');
+
+Route::patch(
+    '/orders/{orderId}/fordelivery',
+    [OrdersController::class, 'forDeliveryOrder']
+)->name('orders.fordelivery');
+
+Route::patch(
+    '/orders/{orderId}/delivered',
+    [OrdersController::class, 'deliveredOrder']
+)->name('orders.delivered');
 
 //Role
 route::get(
@@ -114,6 +177,10 @@ route::get(
     '/administration/staff/create',
     [RoleController::class, 'addStaff']
 )->name('staff.create');
+route::delete(
+    '/administration/staff/remove/{$id}',
+    [StaffController::class, 'destroy']
+)->name('staff.destroy');
 
 //Archives
 Route::get(

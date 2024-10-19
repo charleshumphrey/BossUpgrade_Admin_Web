@@ -171,3 +171,41 @@
 .menu-list li ul a {
     background-color: #5d5d5d;
 }
+.image-slider {
+    display: flex;
+    align-items: center;
+}
+
+.image-container {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    position: relative;
+}
+
+.slider-image {
+    max-width: 100%;
+    max-height: 400px;
+}
+
+.btn {
+    margin: 0 10px;
+}
+
+.image-thumbnails {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.thumbnail {
+    width: 50px;
+    height: 50px;
+    margin: 5px;
+    cursor: pointer;
+    opacity: 0.7;
+}
+
+.thumbnail:hover {
+    opacity: 1;
+}

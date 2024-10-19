@@ -74,6 +74,9 @@ class MenuItemsController extends Controller
             'imageUrl' => $imageUrls,
             'category' => $validatedData['category'],
             'time_added' => now()->toDateTimeString(),
+            'soldCount' => 0,
+            'totalRatings' => 0,
+            'averageRating' => 0
         ];
 
 
@@ -88,6 +91,48 @@ class MenuItemsController extends Controller
     }
 
 
+    public function edit($menuId)
+    {
+        try {
+            $database = $this->firebaseService->getDatabase();
+
+
+            $menuItemRef = $database->getReference("menu/{$menuId}");
+            $menuItem = $menuItemRef->getValue();
+
+            if (!$menuItem) {
+                return redirect()->back()->with('error', 'Menu item not found.');
+            }
+
+            $categoriesRef = $database->getReference('categories');
+            $categoriesSnapshot = $categoriesRef->getValue();
+
+            $categories = [];
+            if ($categoriesSnapshot) {
+                foreach ($categoriesSnapshot as $categoryId => $categoryData) {
+                    if (isset($categoryData['categoryName'])) {
+                        $categories[] = [
+                            'id' => $categoryId,
+                            'name' => $categoryData['categoryName']
+                        ];
+                    }
+                }
+            }
+
+            $categoryName = 'Unknown';
+            if (isset($menuItem['categoryId']) && isset($categories[$menuItem['categoryId']])) {
+                $categoryName = $categories[$menuItem['categoryId']]['name'];
+            }
+
+            return view('edit-menu-item', [
+                'menuItem' => $menuItem,
+                'categories' => $categories,
+                'selectedCategoryId' => $menuItem['category'] ?? null,
+            ]);
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Failed to retrieve menu item or categories.');
+        }
+    }
 
     public function paginatedData(Request $request)
     {
@@ -160,19 +205,138 @@ class MenuItemsController extends Controller
         }
     }
 
-    public function archiveMenuItem($id)
+    // public function archiveMenuItem($menuId)
+    // {
+    //     $database = $this->firebaseService->getDatabase();
+
+    //     $menuItem = $database->getReference("menu/$menuId")->getValue();
+
+    //     if ($menuItem) {
+    //         $database->getReference("archives/menu/$menuId")->set($menuItem);
+
+    //         $database->getReference("menu/$menuId")->remove();
+    //     }
+
+
+    //     return redirect()->route('menu-items')->with('success', 'Menu item move to archive successfully.');
+    // }
+
+    public function archive($menuId)
     {
         $database = $this->firebaseService->getDatabase();
+        try {
 
-        $menuItem = $database->getReference("menu/$id")->getValue();
+            $menuItem = $database->getReference('menu/' . $menuId)->getValue();
 
-        if ($menuItem) {
-            $database->getReference("archives/menu/$id")->set($menuItem);
+            if (!$menuItem) {
+                return response()->json(['success' => false, 'message' => 'Menu item not found'], 404);
+            }
 
-            $database->getReference("menu/$id")->remove();
+
+            $categoryId = $menuItem['category'];
+
+
+            $database->getReference('archives/' . $menuId)->set($menuItem);
+
+
+            $database->getReference('menu/' . $menuId)->remove();
+
+            $database->getReference('categories/' . $categoryId . '/menuIds/' . $menuId)->remove();
+
+            return response()->json(['success' => true, 'message' => 'Menu item archived successfully']);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+        }
+    }
+    public function update(Request $request, $menuId)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'required|string',
+            'price' => 'required|numeric',
+            'categoryId' => 'required|string',
+            'images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+        ]);
+
+        $firebaseService = new FirebaseService();
+        $existingMenuItem = $firebaseService->getMenuItemById($menuId);
+
+        if (!$existingMenuItem) {
+            return redirect()->route('menu-items')->with('error', 'Menu item not found.');
         }
 
+        $updateData = [
+            'name' => $request->input('name'),
+            'menuDescription' => $request->input('description'),
+            'price' => (int)$request->input('price'),
+            'category' => $request->input('categoryId'),
+            'averageRating' => $existingMenuItem['averageRating'],
+            'totalRatings' => $existingMenuItem['totalRatings'],
+        ];
 
-        return redirect()->route('menu-items')->with('success', 'Menu item move to archive successfully.');
+        $imageUrls = [];
+
+        if ($request->hasFile('images')) {
+            foreach ($request->file('images') as $image) {
+                $imageName = Str::random(20) . '.' . $image->getClientOriginalExtension();
+                $firebaseStoragePath = 'menu/' . $imageName;
+
+                $uploadedFile = $this->firebaseStorage->getBucket()->upload(
+                    file_get_contents($image->getRealPath()),
+                    [
+                        'name' => $firebaseStoragePath,
+                        'predefinedAcl' => 'publicRead',
+                    ]
+                );
+
+                $imageUrl = 'https://storage.googleapis.com/' . $this->firebaseStorage->getBucket()->name() . '/' . $firebaseStoragePath;
+                $imageUrls[] = $imageUrl;
+            }
+        }
+
+        if (!empty($imageUrls)) {
+            $updateData['imageUrl'] = array_values(array_unique($imageUrls));
+        } else {
+            $updateData['imageUrl'] = $existingMenuItem['imageUrl'];
+        }
+
+        if ($existingMenuItem['category'] !== $updateData['category']) {
+            $oldCategoryId = $existingMenuItem['category'];
+            $this->removeMenuIdFromCategory($oldCategoryId, $menuId);
+            $this->addMenuIdToCategory($updateData['category'], $menuId);
+        }
+
+        $firebaseService->updateMenuItem($menuId, $updateData);
+
+        return redirect()->route('menu-items')->with('success', 'Menu item updated successfully.');
+    }
+    private function uploadImageToFirebaseStorage($image)
+    {
+        $storagePath = 'menu-images/' . time() . '_' . $image->getClientOriginalName();
+        $image->storeAs('menu-images', $storagePath, 'firebase');
+
+        return $this->firebaseService->getStorage()->getBucket()->object($storagePath)->signedUrl(new \DateTime('tomorrow')); // Adjust time as needed
+    }
+
+    private function removeMenuIdFromCategory($categoryId, $menuId)
+    {
+        $categoryRef = $this->firebaseService->getDatabase()->getReference('categories/' . $categoryId . '/menuIds');
+        $menuIds = $categoryRef->getValue() ?: [];
+
+        if (isset($menuIds[$menuId])) {
+            unset($menuIds[$menuId]);
+        }
+
+        $categoryRef->set($menuIds);
+    }
+
+    private function addMenuIdToCategory($categoryId, $menuId)
+    {
+        $categoryRef = $this->firebaseService->getDatabase()->getReference('categories/' . $categoryId . '/menuIds');
+        $menuIds = $categoryRef->getValue() ?: [];
+
+        $menuIds[$menuId] = true;
+
+        $categoryRef->set($menuIds);
     }
 }

@@ -33,7 +33,7 @@
                 <li>Admin</li>
                 <li>Administration</li>
                 <li>Staff</li>
-                <li>Create Staff</li>
+                <li>Add Staff</li>
             </ul>
 
         </div>
@@ -49,7 +49,7 @@
                     @if ($editing ?? false)
                     Update Staff
                     @else
-                    Create Staff
+                    Add Staff
                     @endif
                 </p>
             </header>
@@ -61,18 +61,18 @@
                         <label class="font-bold text-sm" for="input_image">Profile <span class="text-gray-400">(Optional)</span></label>
                         <input name="input_image" class="block w-full text-lg text-gray-900 border border-gray-300 rounded-sm cursor-pointer bg-gray-50 focus:outline-none" id="input_image" type="file">
                         @error('input_image')
-                        <span>{{ $message }}</span>
+                        <span class="text-red-500">{{ $message }}</span>
                         @enderror
                     </div>
 
                     <div class="field">
-                        <label for="fullname" class="font-bold text-sm">Fulll Name</label>
+                        <label for="fullname" class="font-bold text-sm">Full Name</label>
                         <div class="control icons-left">
                             <input name="fullname" id="fullname" class="input" type="text" placeholder="Full Name">
                             <span class="icon left"><i class="mdi mdi-account"></i></span>
                         </div>
                         @error('fullname')
-                        <span>{{ $message }}</span>
+                        <span class="text-red-500">{{ $message }}</span>
                         @enderror
                     </div>
 
@@ -83,7 +83,7 @@
                             <span class="icon left"><i class="mdi mdi-account"></i></span>
                         </div>
                         @error('username')
-                        <span>{{ $message }}</span>
+                        <span class="text-red-500">{{ $message }}</span>
                         @enderror
                     </div>
 
@@ -107,7 +107,7 @@
                             </div>
                         </div>
                         @error('role')
-                        <span>{{ $message }}</span>
+                        <span class="text-red-500">{{ $message }}</span>
                         @enderror
                     </div>
 
@@ -119,7 +119,7 @@
                             <span class="icon right"><i class="mdi mdi-check"></i></span>
                         </div>
                         @error('email')
-                        <span>{{ $message }}</span>
+                        <span class="text-red-500">{{ $message }}</span>
                         @enderror
                     </div>
 
@@ -139,7 +139,7 @@
                             </div>
                         </div>
                         @error('phone')
-                        <span>{{ $message }}</span>
+                        <span class="text-red-500">{{ $message }}</span>
                         @enderror
                     </div>
                     <hr>
@@ -150,7 +150,7 @@
                             <span class="icon left"><i class="mdi mdi-lock"></i></span>
                         </div>
                         @error('password')
-                        <span>{{ $message }}</span>
+                        <span class="text-red-500">{{ $message }}</span>
                         @enderror
                     </div>
                     <div class="field">
@@ -160,7 +160,7 @@
                             <span class="icon left"><i class="mdi mdi-lock"></i></span>
                         </div>
                         @error('retypepass')
-                        <span>{{ $message }}</span>
+                        <span class="text-red-500">{{ $message }}</span>
                         @enderror
                     </div>
                     <div class="field grouped">

@@ -17,7 +17,7 @@ class LoginController extends Controller
         $pass = request()->get('password');
 
         if ($uname == 'patatas') {
-            if ($pass == '1234') {
+            if ($pass == '12345678') {
                 return redirect()->route('dashboard', null)->with('success', 'Login successfully!');
             }
         }

@@ -110,31 +110,31 @@
 
                         <div class="flex flex-col space-y-2">
                             <div>
-                                <input type="checkbox" name="permissions[view_dashboard]" id="view_dashboard" value="1">
+                                <input type="checkbox" name="permissions[view_dashboard]" id="view_dashboard" value=true>
                                 <label for="view_dashboard" class="text-gray-600">View Dashboard</label>
                             </div>
 
                             <div>
-                                <input type="checkbox" name="permissions[manage_administration]" id="manage_users" value="1">
+                                <input type="checkbox" name="permissions[manage_administration]" id="manage_users" value=true>
                                 <label for="manage_users" class="text-gray-600">Manage Administration</label>
                             </div>
 
                             <div>
-                                <input type="checkbox" name="permissions[manage_menu]" id="manage_menu" value="1">
+                                <input type="checkbox" name="permissions[manage_menu]" id="manage_menu" value=true>
                                 <label for="manage_menu" class="text-gray-600">Manage Menu Items</label>
                             </div>
 
                             <div>
-                                <input type="checkbox" name="permissions[manage_orders]" id="manage_orders" value="1">
+                                <input type="checkbox" name="permissions[manage_orders]" id="manage_orders" value=true>
                                 <label for="manage_orders" class="text-gray-600">Manage Orders</label>
                             </div>
 
                             <div>
-                                <input type="checkbox" name="permissions[manage_category]" id="manage_category" value="1">
+                                <input type="checkbox" name="permissions[manage_category]" id="manage_category" value=true>
                                 <label for="manage_category" class="text-gray-600">Manage Category</label>
                             </div>
                             <div>
-                                <input type="checkbox" name="permissions[manage_archives]" id="manage_archives" value="1">
+                                <input type="checkbox" name="permissions[manage_archives]" id="manage_archives" value=true>
                                 <label for="manage_archives" class="text-gray-600">Manage Archives</label>
                             </div>
                         </div>

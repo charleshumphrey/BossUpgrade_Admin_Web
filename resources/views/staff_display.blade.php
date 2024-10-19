@@ -94,7 +94,7 @@
                                         <span class="icon"><i class="fa-solid fa-pen-to-square"></i></span>
                                     </button>
                                 </a>
-                                <form id="deleteForm" action="" method="POST" class="inline-block ml-4">
+                                <form id="deleteForm" action="{{ route('staff.destroy',$staff['id']) }}" method="POST" class="inline-block ml-4">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" class="button small red --jb-modal" data-target="delete_modal" type="button">

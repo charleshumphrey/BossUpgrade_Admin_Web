@@ -18,76 +18,201 @@ class OrdersController extends Controller
         $this->firebaseStorage = $firebaseStorage;
     }
 
-    public function paginatedData(Request $request)
+    public function showPendingOrders(Request $request)
     {
-        $database = $this->firebaseService->getDatabase();
+        $currentPage = $request->get('page', 1);
+        $pendingOrders = $this->firebaseService->getOrdersWithMenuDetails(10, $currentPage, "pending");
 
-        // Get all orders
-        $ordersData = $database->getReference('orders')->getValue();
-        $usersData = $database->getReference('users')->getValue();
-        $menuData = $database->getReference('menu')->getValue();
-        $paymentsData = $database->getReference('payments')->getValue();
+        return view('orders_pending', ['pendingOrders' => $pendingOrders]);
+    }
 
-        $orders = [];
+    public function showConfirmedOrders(Request $request)
+    {
+        $currentPage = $request->get('page', 1);
+        $pendingOrders = $this->firebaseService->getOrdersWithMenuDetails(10, $currentPage, "confirmed");
 
-        foreach ($ordersData as $orderId => $order) {
-            $userId = $order['userId'];
-            $user = isset($usersData[$userId]) ? $usersData[$userId] : null;
-            $username = $user ? $user['username'] : 'Unknown User';
+        return view('orders_confirmed', ['pendingOrders' => $pendingOrders]);
+    }
 
-            $orderItems = [];
-            $totalPrice = 0;
+    public function showPreparingOrders(Request $request)
+    {
+        $currentPage = $request->get('page', 1);
+        $pendingOrders = $this->firebaseService->getOrdersWithMenuDetails(10, $currentPage, "on_preparation");
 
-            foreach ($order['items'] as $menuId => $item) {
-                $menuItem = isset($menuData[$menuId]) ? $menuData[$menuId] : null;
-                if ($menuItem) {
-                    $orderItems[] = [
-                        'name' => $menuItem['name'],
-                        'imageUrl' => $menuItem['imageUrl'],
-                        'quantity' => $item['quantity'],
-                        'price' => $item['price'],
-                        'subtotal' => $item['price'] * $item['quantity'],
-                    ];
-                    $totalPrice += $item['price'] * $item['quantity'];
-                }
+        return view('orders_on_preparation', ['pendingOrders' => $pendingOrders]);
+    }
+    public function showforDeliveryOrders(Request $request)
+    {
+        $currentPage = $request->get('page', 1);
+        $pendingOrders = $this->firebaseService->getOrdersWithMenuDetails(10, $currentPage, "out_for_delivery");
+
+        return view('orders_for_delivery', ['pendingOrders' => $pendingOrders]);
+    }
+    public function showDeliveredOrders(Request $request)
+    {
+        $currentPage = $request->get('page', 1);
+        $pendingOrders = $this->firebaseService->getOrdersWithMenuDetails(10, $currentPage, "delivered");
+
+        return view('orders_pending', ['pendingOrders' => $pendingOrders]);
+    }
+    public function confirmOrder(Request $request, $orderId)
+    {
+        $ordersRef = $this->firebaseService->getDatabase()->getReference('orders/' . $orderId);
+        $orderDetails = $ordersRef->getValue();
+
+        if ($orderDetails) {
+            $ordersRef->update(['status' => 'confirmed']);
+
+            $userId = $orderDetails['userId'];
+            $userRef = $this->firebaseService->getDatabase()->getReference('users/' . $userId);
+            $userData = $userRef->getValue();
+
+            if ($userData) {
+                $fcmToken = $userData['fcmToken'];
+
+                $notificationData = [
+                    'title' => 'Order Confirmed',
+                    'body' => 'Your order #' . $orderId . ' has been confirmed!',
+                    'orderId' => $orderId,
+                ];
+
+                $this->firebaseService->sendNotificationToUser($fcmToken, $notificationData);
             }
 
-            // Get payment details for the order
-            $payment = null;
-            foreach ($paymentsData as $paymentId => $paymentData) {
-                if ($paymentData['orderId'] === $orderId) {
-                    $payment = $paymentData;
-                    break;
-                }
-            }
-
-            $orders[] = [
-                'orderId' => $orderId,
-                'username' => $username,
-                'items' => $orderItems,
-                'totalPrice' => $order['totalPrice'],
-                'status' => $order['status'],
-                'orderDate' => $order['orderDate'],
-                'modeOfPayment' => $payment['modeOfPayment'] ?? 'Unknown',
-                'receiptImageUrl' => $payment['receiptImageUrl'] ?? null,
-                'paymentStatus' => $payment['paymentStatus'] ?? 'pending',
-            ];
+            return redirect()->route('pending_orders.paginated')->with('success', 'Order confirmed successfully!');
         }
 
-        // Paginate orders
-        $collection = collect($orders);
-        $currentPage = LengthAwarePaginator::resolveCurrentPage();
-        $perPage = 7;
-        $currentPageItems = $collection->slice(($currentPage - 1) * $perPage, $perPage)->all();
+        return redirect()->route('pending_orders.paginated')->with('error', 'Order not found!');
+    }
 
-        $orders = new LengthAwarePaginator(
-            $currentPageItems,
-            $collection->count(),
-            $perPage,
-            $currentPage,
-            ['path' => $request->url(), 'query' => $request->query()]
-        );
 
-        return view('orders', compact('orders'));
+    public function prepareOrder(Request $request, $orderId)
+    {
+        $ordersRef = $this->firebaseService->getDatabase()->getReference('orders/' . $orderId);
+        $orderDetails = $ordersRef->getValue();
+
+        if ($orderDetails) {
+            $ordersRef->update(['status' => 'on_preparation']);
+
+            $userId = $orderDetails['userId'];
+            $userRef = $this->firebaseService->getDatabase()->getReference('users/' . $userId);
+            $userData = $userRef->getValue();
+
+            if ($userData) {
+                $fcmToken = $userData['fcmToken'];
+
+                $notificationData = [
+                    'title' => 'Order Preparation',
+                    'body' => 'Your order #' . $orderId . ' is now being prepared!',
+                    'orderId' => $orderId,
+                ];
+
+                $this->firebaseService->sendNotificationToUser($fcmToken, $notificationData);
+            }
+
+            return redirect()->route('confirmed_orders.paginated')->with('success', 'Order is now in preparation!');
+        }
+
+        return redirect()->route('confirmed_orders.paginated')->with('error', 'Order not found!');
+    }
+
+    public function forDeliveryOrder(Request $request, $orderId)
+    {
+        $ordersRef = $this->firebaseService->getDatabase()->getReference('orders/' . $orderId);
+        $orderDetails = $ordersRef->getValue();
+
+        if ($orderDetails) {
+            $ordersRef->update(['status' => 'out_for_delivery']);
+
+            $userId = $orderDetails['userId'];
+            $userRef = $this->firebaseService->getDatabase()->getReference('users/' . $userId);
+            $userData = $userRef->getValue();
+
+
+            $totalPrice = isset($orderDetails['totalPrice']) ? $orderDetails['totalPrice'] : 0.00;
+
+
+            $formattedTotalPrice = '₱' . number_format($totalPrice, 2);
+
+            if ($userData) {
+                $fcmToken = $userData['fcmToken'];
+
+                $notificationData = [
+                    'title' => 'Order Out for Delivery',
+                    'body' => 'Your order #' . $orderId . ' is now out for delivery! Please prepare a amount of ' . $formattedTotalPrice .
+                        ' plus an extra for delivery fee' .
+                        '. Note that delivery fees may vary based on your location.',
+                    'orderId' => $orderId,
+                ];
+
+                $this->firebaseService->sendNotificationToUser($fcmToken, $notificationData);
+            }
+
+            return redirect()->route('on_preparation_orders.paginated')->with('success', 'Order is out for delivery!');
+        }
+
+        return redirect()->route('on_preparation_orders.paginated')->with('error', 'Order not found!');
+    }
+
+
+    public function deliveredOrder(Request $request, $orderId)
+    {
+
+        $ordersRef = $this->firebaseService->getDatabase()->getReference('orders/' . $orderId);
+        $orderDetails = $ordersRef->getValue();
+
+        if ($orderDetails) {
+
+            $ordersRef->update(['status' => 'delivered']);
+
+            $items = $orderDetails['items'];
+
+            foreach ($items as $menuId => $itemDetails) {
+                $quantity = $itemDetails['quantity'];
+
+                $menuRef = $this->firebaseService->getDatabase()->getReference('menu/' . $menuId);
+                $menuItem = $menuRef->getValue();
+
+                if ($menuItem) {
+                    $newSoldCount = isset($menuItem['soldCount']) ? $menuItem['soldCount'] + $quantity : $quantity;
+
+                    $menuRef->update(['soldCount' => $newSoldCount]);
+                }
+            }
+
+            $userId = $orderDetails['userId'];
+            $userRef = $this->firebaseService->getDatabase()->getReference('users/' . $userId);
+            $userData = $userRef->getValue();
+
+            if ($userData) {
+                $fcmToken = $userData['fcmToken'];
+
+                $notificationData = [
+                    'title' => 'Order Delivered',
+                    'body' => 'Your order #' . $orderId . ' has been delivered successfully!',
+                    'orderId' => $orderId,
+                ];
+
+                $this->firebaseService->sendNotificationToUser($fcmToken, $notificationData);
+            }
+
+            return redirect()->route('for_delivery_orders.paginated')->with('success', 'Order delivered successfully!');
+        }
+
+        return redirect()->route('for_delivery_orders.paginated')->with('error', 'Order not found!');
+    }
+
+
+
+    public function showOrderDetails($orderId)
+    {
+
+        $orderDetails = $this->firebaseService->getOrderDetailsById($orderId);
+
+        if (!$orderDetails) {
+            return redirect()->back()->with('error', 'Order not found');
+        }
+
+        return view('view_order_details', compact('orderDetails'));
     }
 }
