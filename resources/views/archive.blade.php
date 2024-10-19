@@ -10,6 +10,7 @@
 
     @vite('resources/css/app.css')
     @vite('resources/js/app.js')
+    @vite('resources/js/archive.js')
 
 </head>
 
@@ -32,9 +33,8 @@
         <div class="flex flex-col md:flex-row items-center justify-between space-y-6 md:space-y-0">
             <ul>
                 <li>Admin</li>
-                <li>Archive</li>
+                <li>Archives</li>
             </ul>
-
         </div>
     </section>
 
@@ -42,34 +42,13 @@
 
         @include('shared.success')
 
-        <div class="w-full flex justify-end py-2 shadow-sm bg-white rounded-sm px-3 mb-2 justify-between">
-            <a class="button bg-accent-color" href="{{ route('add-menu-items') }}">Add New</a>
-            <div class="flex gap-1">
-                <p class="content-center font-poppins_regular font-semibold">Select By</p>
-                <form method="GET" action="{{ url()->current() }}">
-                    <select id="category" name="category" onchange="this.form.submit()" class="border border-gray-300 p-2 rounded-md cursor-pointer bg-gray-100">
-                        <option value="">All</option>
-                        @if (count($categories) > 0)
-                        @foreach ($categories as $category)
-                        <option value="{{ $category['id'] }}" {{ $selectedCategory == $category['id'] ? 'selected' : '' }}>
-                            {{ $category['name'] }}
-                        </option>
-                        @endforeach
-                        @else
-                        <option>No categories available</option>
-                        @endif
-                    </select>
-                </form>
-            </div>
-        </div>
-
         <div class="card has-table">
             <header class="card-header">
                 <p class="card-header-title">
                     <span class="icon"><i class="fa-solid fa-burger"></i></span>
                     Items
                 </p>
-                <a href="{{ route('menu-items') }}" class="card-header-icon bg-blue-200 rounded-sm">
+                <a href="{{ route('archive.index') }}" class="card-header-icon bg-blue-200 rounded-sm">
                     <span class="icon"><i class="mdi mdi-reload"></i></span>
                 </a>
             </header>
@@ -97,28 +76,31 @@
                                 </div>
                             </td>
                             <td class="truncate max-w-sm">{{ $item['menuDescription'] ?? 'null' }}</td>
-                            <td>{{ $item['price'] ?? 'null' }}</td>
+                            <td>
+                                <small>₱ {{number_format($item['price'] ?? 'null', 2) }}</small>
+                            </td>
                             <td class="text-gray-500">
                                 <small>{{ $item['time_added'] ?? 'null' }}</small>
                             </td>
                             <td class="actions-cell">
                                 <div class="buttons right nowrap">
-                                    <button class="button small blue --jb-modal" data-target="view-modal-{{ $key }}" type="button">
+                                    <!-- <button class="button small blue --jb-modal" data-target="view-modal-{{ $key }}" type="button">
                                         <span class="icon"><i class="mdi mdi-eye"></i></span>
-                                    </button>
-                                    <button class="button small green --jb-modal" data-target="edit-modal-{{ $key }}" type="button">
+                                    </button> -->
+                                    <a href="{{ route('menu-items.edit', $item['menuId']) }}" class="button small green">
                                         <span class="icon"><i class="fa-solid fa-pen-to-square"></i></span>
-                                    </button>
+                                    </a>
+
                                     <button class="button small red --jb-modal" data-target="archive-modal{{ $item['menuId'] }}" type="button">
-                                        <span class="icon"><i class="mdi mdi-trash-can"></i></span>
+                                        <span class="icon"><i class="mdi mdi-package-down"></i></span>
                                     </button>
-                                    <!-- <form id="archiveForm" action="{{ route('menu-items.archive', ['id' => $item['menuId']]) }}" method="POST" class="inline-block ml-4">
+                                    <form id="archiveForm" action="{{ route('archive.destroy', $item['menuId']) }}" method="POST" class="inline-block ml-4">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="button small red --jb-modal" data-target="delete_modal" type="button">
-                                            <span class="icon"><i class="mdi mdi-archive-arrow-down"></i></span>
+                                            <span class="icon"><i class="mdi mdi-trash-can"></i></span>
                                         </button>
-                                    </form> -->
+                                    </form>
                                 </div>
                             </td>
                         </tr>
@@ -127,21 +109,22 @@
                             <div class="modal-background --jb-modal-close"></div>
                             <div class="modal-card">
                                 <header class="modal-card-head">
-                                    <p class="modal-card-title text-black">Confirm Archive</p>
+                                    <i class="fa-solid fa-trash-can text-red-500 mr-4"></i>
+                                    <p class="modal-card-title text-black">Archive Menu</p>
                                 </header>
                                 <section class="modal-card-body text-gray-700">
-                                    <p>Are you sure you want to archive this item?</p>
-                                    <p>This action will move the item to the archives.</p>
+                                    <p>Are you sure you want to put this item to <span class="text-red-500">archive</span> ?</p>
+                                    <p>This action will put this item to the <span class="text-red-500">archive</span> and cannot be seen by users on mobile.</p>
                                 </section>
                                 <footer class="modal-card-foot justify-end">
                                     <button id="cancel-archive" class="button --jb-modal-close">Cancel</button>
-                                    <button id="confirm-archive" class="button blue">Confirm</button>
+                                    <button id="confirm-archive" class="button red archive-confirm" data-menu-id="{{ $item['menuId'] }}">Confirm</button>
                                 </footer>
                             </div>
                         </div>
                         @empty
                         <tr>
-                            <td colspan="7" class="px-6 py-4  text-center">No menu items available.</td>
+                            <td colspan="7" class="px-6 py-4  text-center">Archive is empty.</td>
                         </tr>
 
                         @endforelse
@@ -194,7 +177,6 @@
     </div>
     <!-- Icons below are for demo only. Feel free to use any icon pack. Docs: https://bulma.io/documentation/elements/icon/ -->
     <link rel="stylesheet" href="https://cdn.materialdesignicons.com/4.9.95/css/materialdesignicons.min.css">
-
 </body>
 
 </html>

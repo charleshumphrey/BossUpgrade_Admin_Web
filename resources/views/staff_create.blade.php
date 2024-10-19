@@ -58,7 +58,7 @@
                     @csrf
                     @method('POST')
                     <div class="field">
-                        <label class="font-bold text-sm" for="input_image">Profile <span class="text-gray-400">(Optional)</span></label>
+                        <label class="font-bold text-sm" for="input_image">Profile</label>
                         <input name="input_image" class="block w-full text-lg text-gray-900 border border-gray-300 rounded-sm cursor-pointer bg-gray-50 focus:outline-none" id="input_image" type="file">
                         @error('input_image')
                         <span class="text-red-500">{{ $message }}</span>

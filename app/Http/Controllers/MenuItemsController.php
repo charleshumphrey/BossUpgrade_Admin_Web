@@ -224,29 +224,26 @@ class MenuItemsController extends Controller
     public function archive($menuId)
     {
         $database = $this->firebaseService->getDatabase();
-        try {
-
-            $menuItem = $database->getReference('menu/' . $menuId)->getValue();
-
-            if (!$menuItem) {
-                return response()->json(['success' => false, 'message' => 'Menu item not found'], 404);
-            }
 
 
-            $categoryId = $menuItem['category'];
+        $menuItem = $database->getReference('menu/' . $menuId)->getValue();
 
-
-            $database->getReference('archives/' . $menuId)->set($menuItem);
-
-
-            $database->getReference('menu/' . $menuId)->remove();
-
-            $database->getReference('categories/' . $categoryId . '/menuIds/' . $menuId)->remove();
-
-            return response()->json(['success' => true, 'message' => 'Menu item archived successfully']);
-        } catch (\Exception $e) {
-            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+        if (!$menuItem) {
+            return response()->json(['success' => false, 'message' => 'Menu item not found'], 404);
         }
+
+
+        $categoryId = $menuItem['category'];
+
+
+        $database->getReference('archives/menu/' . $menuId)->set($menuItem);
+
+
+        $database->getReference('menu/' . $menuId)->remove();
+
+        $database->getReference('categories/' . $categoryId . '/menuIds/' . $menuId)->remove();
+
+        return redirect()->route('menu-items')->with('success', 'Menu Item successfully put to the archive.');
     }
     public function update(Request $request, $menuId)
     {

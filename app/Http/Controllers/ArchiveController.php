@@ -71,10 +71,23 @@ class ArchiveController extends Controller
             ['path' => $request->url(), 'query' => $request->query()]
         );
 
-        return view('menu_items', [
+        return view('archive', [
             'data' => $paginatedData,
             'categories' => $categories,
             'selectedCategory' => $selectedCategoryId
         ]);
+    }
+
+    public function destroy($menuId)
+    {
+
+        try {
+            $database = $this->firebaseService->getDatabase();
+            $database->getReference('archives/menu/' . $menuId)->remove();
+
+            return redirect()->route('archive.index')->with('success', 'Menu Item deleted successfully.');
+        } catch (\Exception $e) {
+            return redirect()->route('archive.index')->with('error', 'Failed to Category.');
+        }
     }
 }

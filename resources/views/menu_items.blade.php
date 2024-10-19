@@ -87,23 +87,23 @@
                             </td>
                             <td class="actions-cell">
                                 <div class="buttons right nowrap">
-                                    <button class="button small blue --jb-modal" data-target="view-modal-{{ $key }}" type="button">
+                                    <!-- <button class="button small blue --jb-modal" data-target="view-modal-{{ $key }}" type="button">
                                         <span class="icon"><i class="mdi mdi-eye"></i></span>
-                                    </button>
+                                    </button> -->
                                     <a href="{{ route('menu-items.edit', $item['menuId']) }}" class="button small green">
                                         <span class="icon"><i class="fa-solid fa-pen-to-square"></i></span>
                                     </a>
 
-                                    <button class="button small red --jb-modal" data-target="archive-modal{{ $item['menuId'] }}" type="button">
-                                        <span class="icon"><i class="fa-solid fa-trash-can"></i></i></span>
-                                    </button>
-                                    <!-- <form id="archiveForm" action="{{ route('menu-items.archive', ['id' => $item['menuId']]) }}" method="POST" class="inline-block ml-4">
+                                    <!-- <button class="button small red --jb-modal" data-target="archive-modal{{ $item['menuId'] }}" type="button">
+                                        <span class="icon"><i class="mdi mdi-package-down"></i></span>
+                                    </button> -->
+                                    <form id="archiveForm" action="{{ route('menu-items.archive', $item['menuId']) }}" method="POST" class="inline-block ml-4">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="button small red --jb-modal" data-target="delete_modal" type="button">
                                             <span class="icon"><i class="mdi mdi-archive-arrow-down"></i></span>
                                         </button>
-                                    </form> -->
+                                    </form>
                                 </div>
                             </td>
                         </tr>

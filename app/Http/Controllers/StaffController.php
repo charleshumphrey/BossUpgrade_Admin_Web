@@ -70,7 +70,6 @@ class StaffController extends Controller
             'fullname' => 'required|string|max:255',
             'username' => 'required|string|max:255',
             'role' => ['required', function ($attribute, $value, $fail) {
-
                 $roleExists = $this->firebaseService->getDatabase()->getReference('roles')
                     ->orderByKey()
                     ->equalTo($value)
@@ -84,7 +83,7 @@ class StaffController extends Controller
             'phone' => 'required|string|regex:/^[0-9]{10}$/',
             'password' => 'required|min:8',
             'retypepass' => 'required|same:password',
-            'input_image' => 'nullable|image|max:2048',
+            'input_image' => 'required|image|max:2048',
         ]);
 
         if ($validator->fails()) {
@@ -93,14 +92,17 @@ class StaffController extends Controller
 
         $existingUser = $this->firebaseService->usernameExists($request->username);
 
+        // Uncomment if you want to check for existing username
         // if ($existingUser) {
         //     return redirect()->back()->withErrors(['username' => 'Username already exists'])->withInput();
         // }
 
         $profileImage = null;
+
         if ($request->hasFile('input_image')) {
             $image = $request->file('input_image');
             $imagePath = 'staff/' . time() . '_' . $image->getClientOriginalName();
+
 
             $uploadedFile = $this->firebaseStorage->getBucket()->upload(
                 file_get_contents($image->getRealPath()),
@@ -109,6 +111,7 @@ class StaffController extends Controller
                     'predefinedAcl' => 'publicRead'
                 ]
             );
+
 
             $profileImage = 'https://storage.googleapis.com/' . $this->firebaseStorage->getBucket()->name() . '/' . $imagePath;
         }
@@ -120,7 +123,7 @@ class StaffController extends Controller
         $staffData = [
             'fullname' => $request->fullname,
             'username' => $request->username,
-            'profileImage' => $profileImage ?? null,
+            'profileImage' => $profileImage,
             'password' => $hashedPassword,
             'roleId' => $request->role,
             'email' => $request->email,
@@ -132,6 +135,8 @@ class StaffController extends Controller
 
         return redirect()->route('staff.index')->with('success', 'Staff added successfully!');
     }
+
+
     public function usernameExists($username)
     {
         $staffRef = $this->firebaseService->getDatabase()->getReference('staff')

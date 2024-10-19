@@ -17,29 +17,33 @@
             <div class="text-black navbar-item dropdown has-divider has-user-avatar">
                 <a class="navbar-link">
                     <div class="user-avatar">
-                        <img src="{{ asset('build/assets/images/avatar-default-symbolic-svgrepo-com.svg') }}" alt="Profile_Image" class="rounded-full">
+                        <!-- <img src="{{ asset('build/assets/images/avatar-default-symbolic-svgrepo-com.svg') }}" alt="Profile_Image" class="rounded-full"> -->
+                        <img class="rounded-full" src="{{ Session::get('user')['profileImage'] }}" alt="user_profile">
                     </div>
-                    <div class="is-user-name"><span class="">Patatas</span></div>
+                    <div class="is-user-name"><span class="">{{ Session::get('user')['username'] }}</span></div>
                     <span class="icon"><i class="mdi mdi-chevron-down"></i></span>
                 </a>
                 <div class="text-black navbar-dropdown">
-                    <a href="profile.html" class="navbar-item hover:bg-gray-100">
+                    <a href="{{ route('profile') }}" class="navbar-item hover:bg-gray-100">
                         <span class="icon"><i class="mdi mdi-account"></i></span>
                         <span>My Profile</span>
                     </a>
-                    <a class="navbar-item hover:bg-gray-100">
+                    <!-- <a class="navbar-item hover:bg-gray-100">
                         <span class="icon"><i class="mdi mdi-settings"></i></span>
                         <span>Settings</span>
                     </a>
                     <a class="navbar-item hover:bg-gray-100">
                         <span class="icon"><i class="mdi mdi-email"></i></span>
                         <span>Messages</span>
-                    </a>
+                    </a> -->
                     <hr class="navbar-divider hover:bg-gray-100" />
-                    <a class="navbar-item text-red-500 hover:bg-red-50">
-                        <span class="icon"><i class="mdi mdi-logout"></i></span>
-                        <span>Log Out</span>
-                    </a>
+                    <form action="{{ route('logout') }}" method="POST" id="logout-form">
+                        @csrf
+                        <button type="submit" class="w-full navbar-item text-red-500 hover:bg-red-50">
+                            <span class="icon"><i class="mdi mdi-logout"></i></span>
+                            <span>Log Out</span>
+                        </button>
+                    </form>
                 </div>
             </div>
         </div>

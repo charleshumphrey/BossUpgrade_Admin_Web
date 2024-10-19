@@ -22,10 +22,20 @@ Route::get(
     [LoginController::class, 'login']
 )->name('login-auth');
 
+//logout
+Route::post(
+    '/logout',
+    [LoginController::class, 'logout']
+)->name('logout');
 
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->name('dashboard');
+
+//admin's profile
+Route::get('/profile', function () {
+    return view('profile');
+})->name('profile');
 
 Route::get('/change_password', function () {
     return view('change-password');
@@ -65,7 +75,7 @@ Route::post(
     [MenuItemsController::class, 'store']
 )->name('menu-items.store');
 
-Route::post(
+Route::delete(
     '/menu-items/archive/{menuId}',
     [MenuItemsController::class, 'archive']
 )->name('menu-items.archive');
@@ -173,7 +183,10 @@ route::get(
     [StaffController::class, 'index']
 )->name('staff.index');
 
-Route::post('/administration/staff/store', [StaffController::class, 'store'])->name('staff.store');
+Route::post(
+    '/administration/staff/store',
+    [StaffController::class, 'store']
+)->name('staff.store');
 
 route::get(
     '/administration/staff/create',
@@ -190,7 +203,10 @@ Route::get(
     [ArchiveController::class, 'paginatedData']
 )->name('archive.index');
 
-Route::delete('/archive-menu-item/{id}', [MenuItemsController::class, 'archiveMenuItem'])->name('menu-items.archive');
+Route::delete(
+    '/archive/delete/{menuId}',
+    [ArchiveController::class, 'destroy']
+)->name('archive.destroy');
 
 //FAQs
 Route::get(
