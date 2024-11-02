@@ -20,15 +20,16 @@ class ArchiveController extends Controller
     }
     public function paginatedData(Request $request)
     {
-
         $database = $this->firebaseService->getDatabase();
 
-        $menuData = $database->getReference('archives/menu')->getValue();
+        // Retrieve the menu and category data from Firebase
+        $menuData = $database->getReference('archives/menu')->getValue() ?? [];  // Assign an empty array if null
         $categoriesSnapshot = $database->getReference('categories')->getValue();
 
         $selectedCategoryId = $request->input('category');
 
-        if ($selectedCategoryId) {
+        // Filter the menu data by category if a category is selected
+        if ($selectedCategoryId && $categoriesSnapshot) {
             $filteredMenu = [];
 
             if (isset($categoriesSnapshot[$selectedCategoryId]['menuIds'])) {
@@ -41,6 +42,7 @@ class ArchiveController extends Controller
             $menuData = $filteredMenu;
         }
 
+        // Build the category list for the dropdown
         $categories = [];
         if ($categoriesSnapshot) {
             foreach ($categoriesSnapshot as $categoryId => $categoryData) {
@@ -53,11 +55,14 @@ class ArchiveController extends Controller
             }
         }
 
+        // Sort the menu data by time_added if it's not empty
+        if (!empty($menuData)) {
+            usort($menuData, function ($a, $b) {
+                return $b['time_added'] <=> $a['time_added'];
+            });
+        }
 
-        usort($menuData, function ($a, $b) {
-            return $b['time_added'] <=> $a['time_added'];
-        });
-
+        // Paginate the data
         $collection = collect($menuData);
         $currentPage = LengthAwarePaginator::resolveCurrentPage();
         $perPage = 10;
@@ -77,6 +82,7 @@ class ArchiveController extends Controller
             'selectedCategory' => $selectedCategoryId
         ]);
     }
+
 
     public function destroy($menuId)
     {

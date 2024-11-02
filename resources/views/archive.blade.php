@@ -87,38 +87,36 @@
                                     <!-- <button class="button small blue --jb-modal" data-target="view-modal-{{ $key }}" type="button">
                                         <span class="icon"><i class="mdi mdi-eye"></i></span>
                                     </button> -->
-                                    <a href="{{ route('menu-items.edit', $item['menuId']) }}" class="button small green">
+                                    <!-- <a href="{{ route('menu-items.edit', $item['menuId']) }}" class="button small green">
                                         <span class="icon"><i class="fa-solid fa-pen-to-square"></i></span>
-                                    </a>
-
-                                    <button class="button small red --jb-modal" data-target="archive-modal{{ $item['menuId'] }}" type="button">
-                                        <span class="icon"><i class="mdi mdi-package-down"></i></span>
+                                    </a> -->
+                                    <button class="button small blue --jb-modal" data-target="archive-modal{{ $item['menuId'] }}" type="button">
+                                        <span class="icon"><i class="mdi mdi-package-up"></i></span>
                                     </button>
-                                    <form id="archiveForm" action="{{ route('archive.destroy', $item['menuId']) }}" method="POST" class="inline-block ml-4">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="button small red --jb-modal" data-target="delete_modal" type="button">
-                                            <span class="icon"><i class="mdi mdi-trash-can"></i></span>
-                                        </button>
-                                    </form>
+                                    <button class="button small red --jb-modal" data-target="delete-modal{{$item['menuId']}}" type="button">
+                                        <span class="icon"><i class="mdi mdi-trash-can"></i></span>
+                                    </button>
                                 </div>
                             </td>
                         </tr>
 
-                        <div id="archive-modal{{ $item['menuId'] }}" class="modal hidden">
+                        <div id="delete-modal{{ $item['menuId'] }}" class="modal hidden">
                             <div class="modal-background --jb-modal-close"></div>
                             <div class="modal-card">
                                 <header class="modal-card-head">
                                     <i class="fa-solid fa-trash-can text-red-500 mr-4"></i>
-                                    <p class="modal-card-title text-black">Archive Menu</p>
+                                    <p class="modal-card-title text-black">Confirm <span class="text-red-500">Deletion</span></p>
                                 </header>
                                 <section class="modal-card-body text-gray-700">
-                                    <p>Are you sure you want to put this item to <span class="text-red-500">archive</span> ?</p>
-                                    <p>This action will put this item to the <span class="text-red-500">archive</span> and cannot be seen by users on mobile.</p>
+                                    <p>Are you sure you want to <span class="text-red-500">permanently delete</span> this item? This action <strong>cannot be undone</strong> and will remove the item from the archive and users’ view.</p>
                                 </section>
                                 <footer class="modal-card-foot justify-end">
                                     <button id="cancel-archive" class="button --jb-modal-close">Cancel</button>
-                                    <button id="confirm-archive" class="button red archive-confirm" data-menu-id="{{ $item['menuId'] }}">Confirm</button>
+                                    <form id="archiveForm" action="{{ route('archive.destroy', $item['menuId']) }}" method="POST" class="inline-block ml-4">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" id="confirm-archive" class="button red archive-confirm">Confirm</button>
+                                    </form>
                                 </footer>
                             </div>
                         </div>

@@ -27,8 +27,10 @@
                     </div>
                 </div>
                 <div class="h-1/3 px-5 py-3 flex flex-col gap-2">
-                    <h1 class="font-bold text-xl">Admin Panel</h1>
-                    <p class="font-thin text-xs">Lorem ipsum dolor sit amet consectetur adipisicing elit. Iusto vitae porro praesentium, cum consectetur minima molestias! Veniam distinctio ratione dolores ipsum nisi amet quo enim.</p>
+                    <h1 class="font-bold text-xl">Admin/Staff Control Panel</h1>
+                    <p class="font-thin text-xs">
+                        Welcome to the Admin/Staff Control Panel. Please log in to manage orders, menu items, and customer transactions for BossUpgrade Resto Bar. Ensure secure access to streamline your restaurant operations and enhance customer service.
+                    </p>
                 </div>
             </div>
             <div class="md:w-1/2 w-full md:px-14 px-10 py-10 flex flex-col">
@@ -38,6 +40,13 @@
                 <form action="{{ route('login-auth') }}" class="w-full flex flex-col gap-4">
                     @csrf
                     <h1 class="self-center font-poppins_regular font-bold text-md md:text-lg text-gray-800">Login</h1>
+
+                    @if (session('error'))
+                    <p class="text-red-600">
+                        {{ session('error') }}
+                    </p>
+                    @endif
+
                     <div>
                         <label for="username" class="p-1 sm:text-sm text-xs font-poppins_bold font-bold text-gray-500">Username</label>
                         <div class="focus-within:border-black border-1 border-zinc-300 bg-zinc-50 rounded-md flex w-full border border-gray-400 p-2 items-center">

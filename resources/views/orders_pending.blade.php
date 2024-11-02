@@ -81,16 +81,35 @@
                                 </ul>
                             </td>
                             <td class="border border-gray-200">
-                                <form action="{{ route('orders.confirm', $order['orderId']) }}" method="POST">
-                                    @csrf
-                                    @method('PATCH')
-                                    <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Confirm</button>
-                                </form>
+
+                                <button type="submit" class="button bg-green-500 text-white px-4 py-2 rounded --jb-modal" data-target="confirm-modal{{$order['orderId']}}">Confirm</button>
+
                                 <a class="button bg-blue-500 text-white px-4 py-2 rounded" href="{{ route('order_details.show', $order['orderId']) }}">
                                     View Details
                                 </a>
                             </td>
                         </tr>
+
+                        <div id="confirm-modal{{ $order['orderId'] }}" class="modal hidden">
+                            <div class="modal-background --jb-modal-close"></div>
+                            <div class="modal-card">
+                                <header class="modal-card-head">
+                                    <i class="mdi mdi-check-circle-outline text-green-500 mr-4"></i>
+                                    <p class="modal-card-title text-black">Confirm <span class="text-green-500">Order</span></p>
+                                </header>
+                                <section class="modal-card-body text-gray-700">
+                                    <p>Are you sure you want to <span class="text-green-500">confirm</span> this order?</p>
+                                </section>
+                                <footer class="modal-card-foot justify-end">
+                                    <button id="cancel-archive" class="button --jb-modal-close">Cancel</button>
+                                    <form action="{{ route('orders.confirm', $order['orderId']) }}" method="POST">
+                                        @csrf
+                                        @method('PATCH')
+                                        <button type="submit" id="confirm-archive" class="button green archive-confirm">Confirm</button>
+                                    </form>
+                                </footer>
+                            </div>
+                        </div>
 
                         @empty
                         <tr>

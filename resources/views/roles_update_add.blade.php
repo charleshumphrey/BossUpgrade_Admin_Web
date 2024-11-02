@@ -116,7 +116,7 @@
 
                             <div>
                                 <input type="checkbox" name="permissions[manage_administration]" id="manage_users" value=true>
-                                <label for="manage_users" class="text-gray-600">Manage Administration</label>
+                                <label for="manage_users" class="text-gray-600">Manage Roles/Staff</label>
                             </div>
 
                             <div>
@@ -146,6 +146,10 @@
                             <div>
                                 <input type="checkbox" name="permissions[manage_for_delivery_orders]" id="manage_for_delivery_orders" value=true>
                                 <label for="manage_for_delivery_orders" class="text-gray-600">Manage For Delivery Orders</label>
+                            </div>
+                            <div>
+                                <input type="checkbox" name="permissions[manage_messages]" id="manage_messages" value=true>
+                                <label for="manage_messages" class="text-gray-600">Manage Messages</label>
                             </div>
                             <div>
                                 <input type="checkbox" name="permissions[manage_faqs]" id="manage_faqs" value=true>

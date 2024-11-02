@@ -97,13 +97,9 @@
                                     <!-- <button class="button small red --jb-modal" data-target="archive-modal{{ $item['menuId'] }}" type="button">
                                         <span class="icon"><i class="mdi mdi-package-down"></i></span>
                                     </button> -->
-                                    <form id="archiveForm" action="{{ route('menu-items.archive', $item['menuId']) }}" method="POST" class="inline-block ml-4">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="button small red --jb-modal" data-target="delete_modal" type="button">
-                                            <span class="icon"><i class="mdi mdi-archive-arrow-down"></i></span>
-                                        </button>
-                                    </form>
+                                    <button class="button small red --jb-modal" data-target="archive-modal{{$item['menuId']}}" type="button">
+                                        <span class="icon"><i class="mdi mdi-archive-arrow-down"></i></span>
+                                    </button>
                                 </div>
                             </td>
                         </tr>
@@ -112,19 +108,23 @@
                             <div class="modal-background --jb-modal-close"></div>
                             <div class="modal-card">
                                 <header class="modal-card-head">
-                                    <i class="fa-solid fa-trash-can text-red-500 mr-4"></i>
-                                    <p class="modal-card-title text-black">Archive Menu</p>
+                                    <i class="mdi mdi-archive-arrow-down text-red-500 mr-4"></i>
+                                    <p class="modal-card-title text-black">Confirm <span class="text-red-500">Archiving</span></p>
                                 </header>
                                 <section class="modal-card-body text-gray-700">
-                                    <p>Are you sure you want to put this item to <span class="text-red-500">archive</span> ?</p>
-                                    <p>This action will put this item to the <span class="text-red-500">archive</span> and cannot be seen by users on mobile.</p>
+                                    <p>Are you sure you want to <span class="text-red-500">archive</span> this item? Once archived, this item will be hidden from users and <strong>won't be visible on mobile users</strong>.</p>
                                 </section>
                                 <footer class="modal-card-foot justify-end">
                                     <button id="cancel-archive" class="button --jb-modal-close">Cancel</button>
-                                    <button id="confirm-archive" class="button red archive-confirm" data-menu-id="{{ $item['menuId'] }}">Confirm</button>
+                                    <form id="archiveForm" action="{{ route('menu-items.archive', $item['menuId']) }}" method="POST" class="inline-block ml-4">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" id="confirm-archive" class="button red archive-confirm">Confirm</button>
+                                    </form>
                                 </footer>
                             </div>
                         </div>
+
                         @empty
                         <tr>
                             <td colspan="7" class="px-6 py-4  text-center">No menu items available.</td>

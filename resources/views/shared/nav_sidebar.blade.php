@@ -15,7 +15,7 @@
         <li class="--set-active-tables-html">
             <a class="dropdown">
                 <span class="icon"><i class="mdi mdi-account-multiple"></i></span>
-                <span class="menu-item-label">Administration</span>
+                <span class="menu-item-label">Manage Roles/Staff</span>
                 <span class="icon"><i class="mdi mdi-plus"></i></span>
             </a>
             <ul>
@@ -54,7 +54,9 @@
         @if (isset($permissions['manage_archives']) && $permissions['manage_archives'])
         <li class="--set-active-profile-html">
             <a href="{{ route('archive.index') }}">
-                <span class="icon"><i class="mdi mdi-package-down"></i></span>
+                <span class="icon">
+                    <i class="fa-solid fa-box-archive"></i>
+                </span>
                 <span class="menu-item-label">Archives</span>
             </a>
         </li>
@@ -96,11 +98,20 @@
         </li>
         @endif
 
-        @if (isset($permissions['manage_faqs']) && $permissions['manage_faqs'])
+        @if (isset($permissions['manage_messages']) && $permissions['manage_messages'])
         <li>
-            <a href="{{ route('faq.index') }}">
-                <span class="icon"><i class="fa-solid fa-circle-question"></i></span>
-                <span class="menu-item-label">FAQs</span>
+            <a href="{{ route('chats.show') }}">
+                <span class="icon"><i class="fa-solid fa-comments"></i></span>
+                <span class="menu-item-label">Messages</span>
+            </a>
+        </li>
+        @endif
+
+        @if (isset($permissions['manage_feedback']) && $permissions['manage_feedback'])
+        <li>
+            <a href="{{ route('for_delivery_orders.paginated') }}">
+                <span class="icon"><i class="fa-solid fa-comment-dots"></i></span>
+                <span class="menu-item-label">Feedbacks</span>
             </a>
         </li>
         @endif
@@ -114,11 +125,11 @@
         </li>
         @endif
 
-        @if (isset($permissions['manage_feedback']) && $permissions['manage_feedback'])
+        @if (isset($permissions['manage_faqs']) && $permissions['manage_faqs'])
         <li>
-            <a href="{{ route('for_delivery_orders.paginated') }}">
-                <span class="icon"><i class="fa-solid fa-comment-dots"></i></i></span>
-                <span class="menu-item-label">Feedbacks</span>
+            <a href="{{ route('faq.index') }}">
+                <span class="icon"><i class="fa-solid fa-circle-question"></i></span>
+                <span class="menu-item-label">FAQs</span>
             </a>
         </li>
         @endif

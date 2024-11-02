@@ -6,9 +6,11 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{{ config('app.name') }}</title>
+    <script src="https://www.gstatic.com/firebasejs/9.1.3/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.1.3/firebase-database.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-database.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js/dist/chart.umd.js"></script>
+
     @vite('resources/css/app.css')
     @vite('resources/js/app.js')
 </head>
@@ -49,8 +51,9 @@
         <section class="section main-section">
             @include('shared.metrics')
 
-            <div class="flex overflow-hidden w-full gap-5 md:flex-col">
-                <div class="card my-5">
+            <div class="flex flex-col md:flex-row md:gap-5 w-full">
+
+                <div class="card my-5 flex-1">
                     <header class="card-header">
                         <p class="card-header-title">
                             <span class="icon"><i class="mdi mdi-finance"></i></span>
@@ -72,13 +75,13 @@
                                         <div></div>
                                     </div>
                                 </div>
-                                <canvas id="bar-chart" width="980" height="500" class="chartjs-render-monitor block" style="height: 400px; width: 784px; display: block;"></canvas>
+                                <canvas id="bar-chart" class="chartjs-render-monitor block w-full h-96" style="height: 400px;"></canvas>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="card my-5 w-full">
+                <div class="card my-5 flex-1">
                     <header class="card-header">
                         <p class="card-header-title">
                             <span class="icon"><i class="mdi mdi-finance"></i></span>
@@ -100,13 +103,12 @@
                                         <div></div>
                                     </div>
                                 </div>
-                                <canvas id="chart" width="980" height="500" class="chartjs-render-monitor block w-full h-96"></canvas>
+                                <canvas id="chart" class="chartjs-render-monitor block w-full h-96"></canvas>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-
         </section>
 
     </div>

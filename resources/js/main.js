@@ -47,7 +47,8 @@ Array.from(document.getElementsByClassName("--jb-modal")).forEach(function (
     el.addEventListener("click", function (e) {
         var modalTarget = e.currentTarget.getAttribute("data-target");
         document.getElementById(modalTarget).classList.add("active");
-        document.documentElement.classList.add("clipped");
+        document.documentElement.classList.add("is-clipped");
+        document.body.style.overflow = "hidden";
     });
 });
 
@@ -56,6 +57,7 @@ Array.from(document.getElementsByClassName("--jb-modal-close")).forEach(
         el.addEventListener("click", function (e) {
             e.currentTarget.closest(".modal").classList.remove("active");
             document.documentElement.classList.remove("is-clipped");
+            document.body.style.overflow = "";
         });
     }
 );

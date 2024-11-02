@@ -41,71 +41,70 @@
 
         @include('shared.success')
 
-        <div class="bg-white p-5 rounded shadow-md">
-            <h2 class="text-xl font-semibold">Order ID: {{ $orderDetails['orderId'] }}</h2>
-            <p><strong>Total Price:</strong> ₱{{ number_format($orderDetails['totalPrice'], 2) }}</p>
-            <p><strong>Status:</strong> {{ ucfirst($orderDetails['status']) }}</p>
-            <p><strong>Order Date:</strong> {{ \Carbon\Carbon::parse($orderDetails['orderDate'])->format('F d, Y H:i') }}</p>
+        <div class="bg-white p-8 rounded-lg shadow-xl transition-shadow hover:shadow-2xl duration-300 ease-in-out">
+            <h2 class="text-2xl font-bold text-gray-800 border-b pb-2">Order ID: {{ $orderDetails['orderId'] }}</h2>
+            <p class="mt-2 text-gray-700"><strong>Total Price:</strong> ₱{{ number_format($orderDetails['totalPrice'], 2) }}</p>
+            <p class="text-gray-700"><strong>Status:</strong> <span class="font-semibold text-green-600">{{ ucfirst($orderDetails['status']) }}</span></p>
+            <p class="text-gray-700"><strong>Order Date:</strong> {{ \Carbon\Carbon::parse($orderDetails['orderDate'])->format('F d, Y H:i') }}</p>
 
-            <h3 class="mt-4 text-lg font-semibold font-poppins_bold bg-gray-100 border-t">Items</h3>
-            <ul class="bg-gray-50">
+            <h3 class="mt-6 text-lg font-semibold text-gray-900 bg-gray-100 border-t py-2">Items</h3>
+            <ul class="bg-gray-50 divide-y divide-gray-200 rounded-md shadow-sm">
                 @foreach ($orderDetails['items'] as $item)
-                <li class="flex justify-between border-b py-2">
-                    <div class="flex gap-2 justify-center px-3">
-                        <img src="{{  asset($item['imageUrl']) }}" alt="Menu Item Image" class="w-10 h-10 rounded-sm">
-                        <strong>{{ $item['name'] }}</strong>
-                        <p class="text-gray-600">₱{{ number_format($item['price']   , 2) }}</p>
-                        (x{{ $item['quantity'] }})
-                        <p class="text-gray-600">{{ $item['description'] }}</p>
+                <li class="flex justify-between items-center py-4 px-2 hover:bg-gray-100 transition duration-200">
+                    <div class="flex gap-3 items-center">
+                        <img src="{{  asset($item['imageUrl']) }}" alt="Menu Item Image" class="w-16 h-16 rounded-md shadow-lg">
+                        <div>
+                            <strong class="text-gray-800">{{ $item['name'] }}</strong>
+                            <p class="text-gray-600">₱{{ number_format($item['price'], 2) }}</p>
+                            <p class="text-gray-500">Quantity: (x{{ $item['quantity'] }})</p>
+                        </div>
                     </div>
-                    <span class="mr-3">₱{{ number_format($item['price'] * $item['quantity'], 2) }}</span>
+                    <span class="text-gray-800 font-semibold">₱{{ number_format($item['price'] * $item['quantity'], 2) }}</span>
                 </li>
                 @endforeach
-
             </ul>
 
-            <div clas="flex flex-col">
-                <h3 class="font-semibold">Request</h3>
-                <textarea name="" id="" readonly class="resize-none border-1 p-2">
-                {{ $orderDetails['request'] }}
-                </textarea>
+            <div class="mt-4">
+                <h3 class="font-semibold text-gray-900">Request</h3>
+                <textarea readonly class="resize-none border border-gray-300 rounded-md p-3 mt-1 w-full h-24 bg-gray-50 text-gray-800" rows="3">{{ $orderDetails['request'] }}</textarea>
             </div>
 
-            <div class="py-3 mt-3">
-                <h3 class=" text-lg font-semibold font-poppins_bold bg-gray-100 border-t">Payment Information</h3>
-                <div class="bg-gray-50 border-b px-3 py-2">
-                    <p><strong>Total Amount:</strong> ₱{{ number_format($orderDetails['payment']['totalAmount'], 2) }}</p>
-                    <p><strong>Paymen Method:</strong> {{ ucfirst($orderDetails['payment']['paymentMode']) }}</p>
+            <div class="py-4 mt-4">
+                <h3 class="text-lg font-semibold text-gray-900 bg-gray-100 border-t py-2">Payment Information</h3>
+                <div class="bg-gray-50 border-b px-4 py-3 rounded-md shadow-sm">
+                    <p class="text-gray-700"><strong>Total Amount:</strong> ₱{{ number_format($orderDetails['payment']['totalAmount'], 2) }}</p>
+                    <p class="text-gray-700"><strong>Payment Method:</strong> <span class="font-semibold text-blue-600">{{ ucfirst($orderDetails['payment']['paymentMode']) }}</span></p>
                     @if ($orderDetails['payment']['receiptImageUrl'] !== 'null')
-                    <p><strong>Receipt:</strong></p>
-                    <img src="{{ asset($orderDetails['payment']['receiptImageUrl']) }}" alt="Receipt Image" class="mt-2" width="200">
+                    <p class="text-gray-700"><strong>Receipt:</strong></p>
+                    <img src="{{ asset($orderDetails['payment']['receiptImageUrl']) }}" alt="Receipt Image" class="mt-2 rounded-md border border-gray-300" width="200">
                     @else
-                    <p><strong>Receipt:</strong> No receipt available for Cash on Delivery.</p>
+                    <p class="text-gray-700"><strong>Receipt:</strong> No receipt available for Cash on Delivery.</p>
                     @endif
                 </div>
-
             </div>
 
-            <hr>
+            <hr class="my-4 border-gray-300">
 
-            <div class="py-3">
-                <h3 class="text-lg font-semibold font-poppins_bold">User Information</h3>
+            <div class="py-4">
+                <h3 class="text-lg font-semibold text-gray-900">User Information</h3>
                 <div class="flex items-center mb-4">
                     @if ($orderDetails['user']['profileImage'] != 'null')
-                    <img src="{{ asset($orderDetails['user']['profileImage']) }}" alt="Profile Image" class="w-12 h-12 rounded-full mr-3 ">
+                    <img src="{{ asset($orderDetails['user']['profileImage']) }}" alt="Profile Image" class="w-12 h-12 rounded-full border border-gray-300 shadow-md mr-3">
                     @else
-                    <img src="{{ asset('build/assets/images/avatar-default-symbolic-svgrepo-com.svg') }}" alt="Profile Image" class="w-12 h-12 rounded-full mr-3 bg-gray-100">
+                    <img src="{{ asset('build/assets/images/avatar-default-symbolic-svgrepo-com.svg') }}" alt="Profile Image" class="w-12 h-12 rounded-full border border-gray-300 bg-gray-100 shadow-md mr-3">
                     @endif
 
                     <div>
-                        <strong>{{ $orderDetails['user']['username'] }}</strong>
-                        <p><strong>Email: </strong> {{ $orderDetails['user']['email'] }}</p>
-                        <p><strong>Phone:</strong> {{ $orderDetails['user']['phone'] }}</p>
-                        <p><strong>Address: </strong> {{ $orderDetails['sitioStreet'] }}, {{ $orderDetails['barangay'] }}, {{ $orderDetails['city'] }}, Oriental Mindoro, Philippines</p>
+                        <strong class="text-gray-800">{{ $orderDetails['user']['username'] }}</strong>
+                        <p class="text-gray-700"><strong>Email:</strong> {{ $orderDetails['user']['email'] }}</p>
+                        <p class="text-gray-700"><strong>Phone:</strong> {{ $orderDetails['user']['phone'] }}</p>
+                        <p class="text-gray-700"><strong>Address:</strong> {{ $orderDetails['sitioStreet'] }}, {{ $orderDetails['barangay'] }}, {{ $orderDetails['city'] }}, Oriental Mindoro, Philippines</p>
                     </div>
                 </div>
             </div>
         </div>
+
+
     </section>
 
 

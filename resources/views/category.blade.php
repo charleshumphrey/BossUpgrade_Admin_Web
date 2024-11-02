@@ -30,7 +30,6 @@
     <section class="is-title-bar">
         <div class="flex flex-col md:flex-row items-center justify-between space-y-6 md:space-y-0">
             <ul>
-                <li>Admin</li>
                 <li>Category</li>
             </ul>
 
@@ -40,6 +39,7 @@
     <section class="section main-section">
 
         @include('shared.success')
+        @include('shared.error')
 
         <div class="w-full flex justify-end py-2 shadow-sm bg-white rounded-sm px-3 mb-2 justify-between">
             <button class="button bg-accent-color --jb-modal" data-target="add-category-modal" type="button">
@@ -67,12 +67,12 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach($data as $key => $item)
+                        @foreach($data as $key => $category)
                         <tr class="hover:cursor-pointer">
                             <td class="p-3 text-center">{{ $loop->iteration }}</td>
-                            <td>{{ $item['categoryName'] ?? 'null' }}</td>
+                            <td>{{ $category['categoryName'] ?? 'null' }}</td>
                             <td class="text-gray-500">
-                                <small>{{ $item['added_date'] ?? 'null' }}</small>
+                                <small>{{ $category['added_date'] ?? 'null' }}</small>
                             </td>
                             <td>
                                 <div class="justify-center flex gap-2">
@@ -82,12 +82,35 @@
                                     <button class="button small green --jb-modal" data-target="sample-modal-2" type="button">
                                         <span class="icon"><i class="fa-solid fa-pen-to-square"></i></span>
                                     </button>
-                                    <button class="button small red --jb-modal" data-target="sample-modal" type="button">
-                                        <span class="icon"><i class="mdi mdi-archive-arrow-down"></i></span>
+                                    <button class="button small red --jb-modal" data-target="delete-modal{{$category['categoryId']}}" type="button">
+                                        <span class="icon"><i class="mdi mdi-trash-can"></i></span>
                                     </button>
                                 </div>
                             </td>
                         </tr>
+
+                        <div id="delete-modal{{$category['categoryId']}}" class="modal">
+                            <div class="modal-background --jb-modal-close"></div>
+                            <div class="modal-card">
+                                <header class="modal-card-head">
+                                    <i class="fa-solid fa-trash-can text-red-500 mr-4"></i>
+                                    <p class="modal-card-title text-black">Delete Category</p>
+                                </header>
+                                <section class="modal-card-body text-gray-700">
+                                    <p>Are you sure you want to delete the category <b>{{ $category['categoryName'] }}</b>?</p>
+                                    <p>If there are any menu items under this category, the deletion will not be allowed.</p>
+                                </section>
+                                <footer class="modal-card-foot justify-end">
+                                    <button class="button --jb-modal-close">Cancel</button>
+                                    <form action="{{ route('categories.delete', $category['categoryId']) }}" method="POST">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="button red">Confirm Delete</button>
+                                    </form>
+                                </footer>
+                            </div>
+                        </div>
+
                         @endforeach
 
                     </tbody>
@@ -101,39 +124,6 @@
             </div>
         </div>
     </section>
-    <div id="sample-modal" class="modal">
-        <div class="modal-background --jb-modal-close"></div>
-        <div class="modal-card">
-            <header class="modal-card-head">
-                <p class="modal-card-title text-black">Sample modal</p>
-            </header>
-            <section class="modal-card-body text-gray-700">
-                <p>Lorem ipsum dolor sit amet <b>adipiscing elit</b></p>
-                <p>This is sample modal</p>
-            </section>
-            <footer class="modal-card-foot justify-end">
-                <button class="button --jb-modal-close">Cancel</button>
-                <button class="button red --jb-modal-close">Confirm</button>
-            </footer>
-        </div>
-    </div>
-
-    <div id="sample-modal-2" class="modal">
-        <div class="modal-background --jb-modal-close"></div>
-        <div class="modal-card">
-            <header class="modal-card-head">
-                <p class="modal-card-title text-black">Sample modal</p>
-            </header>
-            <section class="modal-card-body text-gray-700">
-                <p>Lorem ipsum dolor sit amet <b>adipiscing elit</b></p>
-                <p>This is sample modal</p>
-            </section>
-            <footer class="modal-card-foot justify-end">
-                <button class="button --jb-modal-close">Cancel</button>
-                <button class="button blue --jb-modal-close">Confirm</button>
-            </footer>
-        </div>
-    </div>
 
     <div id="add-category-modal" class="modal">
         <div class="modal-background --jb-modal-close"></div>
@@ -154,7 +144,7 @@
         </div>
     </div>
     </div>
-    <!-- Icons below are for demo only. Feel free to use any icon pack. Docs: https://bulma.io/documentation/elements/icon/ -->
+
     <link rel="stylesheet" href="https://cdn.materialdesignicons.com/4.9.95/css/materialdesignicons.min.css">
 
 </body>

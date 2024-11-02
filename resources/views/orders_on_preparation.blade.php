@@ -31,7 +31,7 @@
     <section class="is-title-bar">
         <div class="flex flex-col md:flex-row items-center justify-between space-y-6 md:space-y-0">
             <ul>
-                <li>Confirmed Orders</li>
+                <li>On Preparation Orders</li>
             </ul>
 
         </div>

@@ -44,9 +44,9 @@ class OrdersController extends Controller
     public function showforDeliveryOrders(Request $request)
     {
         $currentPage = $request->get('page', 1);
-        $pendingOrders = $this->firebaseService->getOrdersWithMenuDetails(10, $currentPage, "out_for_delivery");
+        $fordeliveryOrders = $this->firebaseService->getOrdersWithMenuDetails(10, $currentPage, "out_for_delivery");
 
-        return view('orders_for_delivery', ['pendingOrders' => $pendingOrders]);
+        return view('orders_for_delivery', ['orders' => $fordeliveryOrders]);
     }
     public function showDeliveredOrders(Request $request)
     {

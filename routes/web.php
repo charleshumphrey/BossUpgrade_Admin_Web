@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ArchiveController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\ChartController;
 use App\Http\Controllers\FAQController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\MenuItemsController;
@@ -9,6 +10,7 @@ use App\Http\Controllers\OrdersController;
 use App\Http\Controllers\PromotionsController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\StaffController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -41,6 +43,21 @@ Route::get('/change_password', function () {
     return view('change-password');
 })->name('change-password');
 
+//chat messages
+Route::get(
+    '/chats',
+    [UserController::class, 'showChats']
+)->name('chats.show');
+
+Route::get(
+    '/chats/{userId}/messages',
+    [UserController::class, 'getUserMessages']
+)->name('chats.getMessages');
+
+Route::post(
+    '/chats/{userId}/messages',
+    [UserController::class, 'sendMessage']
+);
 
 
 //menu items
