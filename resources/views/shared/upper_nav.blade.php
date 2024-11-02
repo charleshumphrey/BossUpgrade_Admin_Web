@@ -28,14 +28,10 @@
                         <span class="icon"><i class="mdi mdi-account"></i></span>
                         <span>My Profile</span>
                     </a>
-                    <!-- <a class="navbar-item hover:bg-gray-100">
-                        <span class="icon"><i class="mdi mdi-settings"></i></span>
-                        <span>Settings</span>
+                    <a href="{{ route('change-password') }}" class="navbar-item hover:bg-gray-100">
+                        <span class="icon"><i class="mdi mdi-lock"></i></span>
+                        <span class="text-sm">Change Password</span>
                     </a>
-                    <a class="navbar-item hover:bg-gray-100">
-                        <span class="icon"><i class="mdi mdi-email"></i></span>
-                        <span>Messages</span>
-                    </a> -->
                     <hr class="navbar-divider hover:bg-gray-100" />
                     <form action="{{ route('logout') }}" method="POST" id="logout-form">
                         @csrf

@@ -9,6 +9,7 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Collection;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Session;
 use Kreait\Firebase\Database;
 use Illuminate\Support\Facades\Hash;
 
@@ -136,6 +137,60 @@ class StaffController extends Controller
         return redirect()->route('staff.index')->with('success', 'Staff added successfully!');
     }
 
+    public function updateProfile(Request $request)
+    {
+        $request->validate([
+            'fullname' => 'required|string|max:255',
+            'profileImage' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'username' => 'required|string|max:255',
+            'email' => 'required|email|max:255',
+            'phone' => 'required|string|regex:/^[0-9]{10}$/',
+        ]);
+
+        $staffId = Session::get('staffId');
+        $database = $this->firebaseService->getDatabase();
+        $staffData = $database->getReference('staff/' . $staffId)->getValue();
+
+        if ($request->hasFile('profileImage')) {
+            $image = $request->file('profileImage');
+            $imagePath = 'staff/' . time() . '_' . $image->getClientOriginalName();
+
+            $uploadedFile = $this->firebaseStorage->getBucket()->upload(
+                file_get_contents($image->getRealPath()),
+                [
+                    'name' => $imagePath,
+                    'predefinedAcl' => 'publicRead'
+                ]
+            );
+
+            if (!empty($staffData['profileImage'])) {
+                $oldImagePath = basename($staffData['profileImage']);
+                $this->firebaseStorage->getBucket()->object('staff/' . $oldImagePath)->delete();
+            }
+
+
+            $staffData['profileImage'] = 'https://storage.googleapis.com/' . $this->firebaseStorage->getBucket()->name() . '/' . $imagePath;
+        }
+
+        $staffData['fullname'] = $request->input('fullname');
+        $staffData['username'] = $request->input('username');
+        $staffData['email'] = $request->input('email');
+        $staffData['phone'] = '+63' . $request->input('phone');
+
+        $database->getReference('staff/' . $staffId)->update($staffData);
+
+        $userSession = Session::get('user');
+        $userSession['profileImage'] = $staffData['profileImage'] ?? $userSession['profileImage'];
+        $userSession['fullname'] = $staffData['fullname'];
+        $userSession['username'] = $staffData['username'];
+        $userSession['email'] = $staffData['email'];
+        $userSession['phone'] = $staffData['phone'];
+        Session::put('user', $userSession);
+
+        return redirect()->route('profile')->with('success', 'Profile updated successfully.');
+    }
+
+
 
     public function usernameExists($username)
     {
@@ -150,8 +205,57 @@ class StaffController extends Controller
     public function destroy($id)
     {
         $database = $this->firebaseService->getDatabase();
+
+        $staffMember = $database->getReference('staff/' . $id)->getValue();
+
+        if (!$staffMember) {
+            return redirect()->route('staff.index')->withErrors(['staff' => 'Staff member not found.']);
+        }
+
+        if (Session::get('staffId') == $id) {
+            return redirect()->route('staff.index')->with('error', 'You cannot delete your own account.');
+        }
+
         $database->getReference('staff/' . $id)->remove();
 
         return redirect()->route('staff.index')->with('success', 'Staff member removed successfully!');
+    }
+
+    public function updatePassword(Request $request)
+    {
+        $request->validate([
+            'current-password' => 'required',
+            'new-password' => 'required|min:8',
+        ], [
+            'current-password.required' => 'Current password is required.',
+            'new-password.required' => 'New password is required.',
+            'new-password.min' => 'New password must be at least 8 characters.',
+        ]);
+
+        $staffId = Session::get('staffId');
+        if (!$staffId) {
+            return redirect()->back()->with('error', 'User not authenticated.');
+        }
+
+        $currentPasswordInSession = Session::get('user')['password'];
+
+        if (!Hash::check($request->input('current-password'), $currentPasswordInSession)) {
+            return redirect()->back()->with('error', 'Current password is incorrect.');
+        }
+
+        if ($request->input('new-password') !== $request->input('new-password-confirmation')) {
+            return redirect()->back()->with('error', 'New password and confirmation do not match.');
+        }
+
+        $newPasswordHash = Hash::make($request->input('new-password'));
+        $database = app('firebase.database');
+        $database->getReference('staff/' . $staffId . '/password')->set($newPasswordHash);
+
+
+        $userSession = Session::get('user');
+        $userSession['password'] = $newPasswordHash;
+        Session::put('user', $userSession);
+
+        return redirect()->back()->with('success', 'Password updated successfully.');
     }
 }

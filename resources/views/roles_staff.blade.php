@@ -30,8 +30,7 @@
     <section class="is-title-bar">
         <div class="flex flex-col md:flex-row items-center justify-between space-y-6 md:space-y-0">
             <ul>
-                <li>Admin</li>
-                <li>Administration</li>
+                <li>Manage Roles/Staff</li>
                 <li>Roles</li>
             </ul>
 
@@ -40,6 +39,8 @@
 
     <section class="section main-section">
         @include('shared.success')
+        @include('shared.error')
+
         <div class="w-full flex justify-end py-2 shadow-sm bg-white rounded-sm px-3 mb-2 justify-between">
             <a class="button bg-accent-color" href="{{ route('roles.create') }}">Add New</a>
         </div>
@@ -89,20 +90,39 @@
                                 <div class="text-sm text-gray-500">{{ $role['created_at'] ?? 'N/A' }}</div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
-                                <a href="{{ route('roles.edit', ['role' => $role['id']]) }}">
+                                <!-- <a href="{{ route('roles.edit', ['role' => $role['id']]) }}">
                                     <button class="button small green --jb-modal" type="button">
                                         <span class="icon"><i class="fa-solid fa-pen-to-square"></i></span>
                                     </button>
-                                </a>
-                                <form id="deleteForm" action="{{ route('roles.destroy', ['role' => $role['id']]) }}" method="POST" class="inline-block ml-4">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="button small red --jb-modal" data-target="delete_modal" type="button">
-                                        <span class="icon"><i class="mdi mdi-trash-can"></i></span>
-                                    </button>
-                                </form>
+                                </a> -->
+                                <button type="submit" class="button small red --jb-modal" data-target="delete-modal{{ $role['id'] }}" type="button">
+                                    <span class="icon"><i class="mdi mdi-trash-can"></i></span>
+                                </button>
                             </td>
                         </tr>
+
+                        <div id="delete-modal{{ $role['id'] }}" class="modal hidden">
+                            <div class="modal-background --jb-modal-close"></div>
+                            <div class="modal-card">
+                                <header class="modal-card-head">
+                                    <i class="fa-solid fa-trash-can text-red-500 mr-4"></i>
+                                    <p class="modal-card-title text-black">Delete Role</p>
+                                </header>
+                                <section class="modal-card-body text-gray-700">
+                                    <p>Are you sure you want to delete the role <b>{{ $role['name'] }}</b>?</p>
+                                    <p>If there are any staff under this role, the deletion will not be allowed.</p>
+                                </section>
+                                <footer class="modal-card-foot justify-end">
+                                    <button class="button --jb-modal-close">Cancel</button>
+                                    <form action="{{ route('roles.destroy', ['role' => $role['id']]) }}" method="POST">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="button red">Confirm Delete</button>
+                                    </form>
+                                </footer>
+                            </div>
+                        </div>
+
                         @empty
                         <tr>
                             <td colspan="5" class="px-6 py-4 text-center text-gray-500">

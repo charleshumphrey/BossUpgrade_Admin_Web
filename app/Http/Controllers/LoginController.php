@@ -46,6 +46,7 @@ class LoginController extends Controller
                     $roleData = $database->getReference('roles/' . $roleId)->getValue();
 
                     Session::put('logged_in', true);
+                    Session::put('staffId', $staffId);
                     Session::put('user', $staffData);
                     Session::put('permissions', $roleData['permissions']);
 

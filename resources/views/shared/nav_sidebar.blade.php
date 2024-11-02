@@ -109,7 +109,7 @@
 
         @if (isset($permissions['manage_feedback']) && $permissions['manage_feedback'])
         <li>
-            <a href="{{ route('for_delivery_orders.paginated') }}">
+            <a href="{{ route('feedbacks.show') }}">
                 <span class="icon"><i class="fa-solid fa-comment-dots"></i></span>
                 <span class="menu-item-label">Feedbacks</span>
             </a>

@@ -76,12 +76,12 @@
                             </td>
                             <td>
                                 <div class="justify-center flex gap-2">
-                                    <button class="button small blue --jb-modal" data-target="add-modal" type="button">
+                                    <!-- <button class="button small blue --jb-modal" data-target="add-modal" type="button">
                                         <span class="icon"><i class="mdi mdi-eye"></i></span>
                                     </button>
                                     <button class="button small green --jb-modal" data-target="sample-modal-2" type="button">
                                         <span class="icon"><i class="fa-solid fa-pen-to-square"></i></span>
-                                    </button>
+                                    </button> -->
                                     <button class="button small red --jb-modal" data-target="delete-modal{{$category['categoryId']}}" type="button">
                                         <span class="icon"><i class="mdi mdi-trash-can"></i></span>
                                     </button>

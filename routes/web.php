@@ -4,6 +4,7 @@ use App\Http\Controllers\ArchiveController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ChartController;
 use App\Http\Controllers\FAQController;
+use App\Http\Controllers\FeedbackController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\MenuItemsController;
 use App\Http\Controllers\OrdersController;
@@ -40,8 +41,22 @@ Route::get('/profile', function () {
 })->name('profile');
 
 Route::get('/change_password', function () {
-    return view('change-password');
+    return view('change_password');
 })->name('change-password');
+
+Route::post(
+    '/password/update',
+    [StaffController::class, 'updatePassword']
+)->name('password.update');
+
+Route::get('/update_profile', function () {
+    return view('profile_update');
+})->name('profile_update');
+
+Route::post(
+    '/update_profile/profile',
+    [StaffController::class, 'updateProfile']
+)->name('profile.update');
 
 //chat messages
 Route::get(
@@ -164,6 +179,12 @@ Route::patch(
     [OrdersController::class, 'deliveredOrder']
 )->name('orders.delivered');
 
+//Feedbacks
+Route::get(
+    '/feedbacks',
+    [FeedbackController::class, 'showFeedbacks']
+)->name('feedbacks.show');
+
 //Role
 route::get(
     '/administration/role',
@@ -209,10 +230,12 @@ route::get(
     '/administration/staff/create',
     [RoleController::class, 'addStaff']
 )->name('staff.create');
-route::delete(
-    '/administration/staff/remove/{$id}',
+
+Route::delete(
+    '/staff/{id}',
     [StaffController::class, 'destroy']
 )->name('staff.destroy');
+
 
 //Archives
 Route::get(

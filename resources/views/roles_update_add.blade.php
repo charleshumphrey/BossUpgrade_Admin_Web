@@ -30,9 +30,7 @@
     <section class="is-title-bar">
         <div class="flex flex-col md:flex-row items-center justify-between space-y-6 md:space-y-0">
             <ul>
-                <li>Admin</li>
-                <li>Administration</li>
-                <li>Role</li>
+                <li>Manage Roles/Staff</li>
                 <li>Create Role</li>
             </ul>
 
@@ -109,10 +107,6 @@
                         <label for="permissions" class="block text-gray-700 font-medium mb-2">Permissions</label>
 
                         <div class="flex flex-col space-y-2">
-                            <div>
-                                <input type="checkbox" name="permissions[view_dashboard]" id="view_dashboard" value=true>
-                                <label for="view_dashboard" class="text-gray-600">View Dashboard</label>
-                            </div>
 
                             <div>
                                 <input type="checkbox" name="permissions[manage_administration]" id="manage_users" value=true>

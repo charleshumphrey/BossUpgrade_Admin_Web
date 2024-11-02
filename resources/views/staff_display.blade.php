@@ -40,6 +40,7 @@
 
     <section class="section main-section">
         @include('shared.success')
+        @include('shared.error')
 
         <div class="w-full flex justify-end py-2 shadow-sm bg-white rounded-sm px-3 mb-2 justify-between">
             <a class="button bg-accent-color" href="{{ route('staff.create') }}">Add New</a>
@@ -89,20 +90,41 @@
                                 <div class="text-sm text-gray-500">{{ $staff['created_at'] ?? 'N/A' }}</div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
-                                <a href="#">
+                                <!-- <a href="#">
                                     <button class="button small green --jb-modal" type="button">
                                         <span class="icon"><i class="fa-solid fa-pen-to-square"></i></span>
                                     </button>
-                                </a>
-                                <form id="deleteForm" action="{{ route('staff.destroy',$staff['id']) }}" method="POST" class="inline-block ml-4">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="button small red --jb-modal" data-target="delete_modal" type="button">
-                                        <span class="icon"><i class="mdi mdi-trash-can"></i></span>
-                                    </button>
-                                </form>
+                                </a> -->
+
+                                <button type="submit" class="button small red --jb-modal" data-target="delete-modal{{$staff['id']}}" type="button">
+                                    <span class="icon"><i class="mdi mdi-trash-can"></i></span>
+                                </button>
+
                             </td>
                         </tr>
+
+                        <div id="delete-modal{{ $staff['id'] }}" class="modal hidden">
+                            <div class="modal-background --jb-modal-close"></div>
+                            <div class="modal-card">
+                                <header class="modal-card-head">
+                                    <i class="fa-solid fa-trash-can text-red-500 mr-4"></i>
+                                    <p class="modal-card-title text-black">Delete Category</p>
+                                </header>
+                                <section class="modal-card-body text-gray-700">
+                                    <p>Are you sure you want to delete this staff <b>{{ $staff['username'] }}</b>?</p>
+                                    <p>If there are any staff under this staff, the deletion will not be allowed.</p>
+                                </section>
+                                <footer class="modal-card-foot justify-end">
+                                    <button class="button --jb-modal-close">Cancel</button>
+                                    <form action="{{ route('staff.destroy', $staff['id']) }}" method="POST">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="button red">Confirm Delete</button>
+                                    </form>
+                                </footer>
+                            </div>
+                        </div>
+
                         @empty
                         <tr>
                             <td colspan="6" class="px-6 py-4 text-center text-gray-500">
@@ -121,22 +143,7 @@
         </div>
     </section>
 
-    <div id="deleteModal" class="modal" style="display: none;">
-        <div class="modal-background" onclick="closeDeleteModal()"></div>
-        <div class="modal-card">
-            <header class="modal-card-head">
-                <p class="modal-card-title text-black">Remove Role</p>
-            </header>
-            <section class="modal-card-body text-gray-700">
-                <!-- Display the staff name dynamically -->
-                <p>Are you sure you want to remove the staff <b id="roleNameInModal"></b>?</p>
-            </section>
-            <footer class="modal-card-foot">
-                <button class="button" onclick="closeDeleteModal()">Cancel</button>
-                <button class="button red" onclick="confirmDelete()">Confirm</button>
-            </footer>
-        </div>
-    </div>
+
     <div id="sample-modal-2" class="modal">
         <div class="modal-background --jb-modal-close"></div>
         <div class="modal-card">

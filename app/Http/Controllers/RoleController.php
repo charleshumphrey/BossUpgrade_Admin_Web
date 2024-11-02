@@ -104,15 +104,25 @@ class RoleController extends Controller
 
         return redirect()->route('roles.index')->with('success', 'Role created successfully!');
     }
+
     public function destroy($role)
     {
         $database = $this->firebaseService->getDatabase();
 
+        $staffMembers = $database->getReference('staff')->getValue();
+
+        foreach ($staffMembers as $staffId => $staffData) {
+            if (isset($staffData['roleId']) && $staffData['roleId'] === $role) {
+
+                return redirect()->route('roles.index')->with('error', 'Role cannot be removed because there are staff members associated with it.');
+            }
+        }
 
         $database->getReference('roles/' . $role)->remove();
 
         return redirect()->route('roles.index')->with('success', 'Role deleted successfully!');
     }
+
 
 
     public function update(Request $request, $role)
