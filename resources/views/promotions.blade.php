@@ -40,6 +40,7 @@
     <section class="section main-section">
 
         @include('shared.success')
+        @include('shared.error')
 
         <div class="card mb-4">
             <header class="card-header">

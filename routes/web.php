@@ -159,6 +159,11 @@ route::get(
     [OrdersController::class, 'showDeliveredOrders']
 )->name('delivered_orders.paginated');
 
+route::get(
+    '/orders/cancelled',
+    [OrdersController::class, 'showCancelledOrders']
+)->name('cancelled_orders.paginated');
+
 Route::patch(
     '/orders/{orderId}/confirm',
     [OrdersController::class, 'confirmOrder']
@@ -178,6 +183,8 @@ Route::patch(
     '/orders/{orderId}/delivered',
     [OrdersController::class, 'deliveredOrder']
 )->name('orders.delivered');
+
+
 
 //Feedbacks
 Route::get(

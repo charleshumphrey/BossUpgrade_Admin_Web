@@ -105,6 +105,12 @@ class FirebaseService
                 });
                 $payment = reset($payment);
 
+                // Determine the order status
+                $orderStatus = $order['status'];
+                if (isset($payment['paymentMode']) && $payment['paymentMode'] === 'GCash' && $orderStatus === 'cancelled') {
+                    $orderStatus = 'For Refund';
+                }
+
                 $orderDetails = [
                     'orderId' => $orderId,
                     'totalPrice' => $order['totalPrice'],
@@ -117,6 +123,7 @@ class FirebaseService
                     'paymentMode' => $payment['paymentMode'] ?? 'Unknown',
                     'paymentStatus' => $payment['paymentStatus'] ?? 'Unknown',
                     'referenceNumber' => $payment['referenceNumber'] ?? null,
+                    'status' => $orderStatus, // Set the modified order status
                     'items' => []
                 ];
 
@@ -154,8 +161,6 @@ class FirebaseService
         return $paginator;
     }
 
-
-
     public function getOrderDetailsById($orderId)
     {
         $ordersRef = $this->database->getReference('orders/' . $orderId);
@@ -169,13 +174,13 @@ class FirebaseService
             return null;
         }
 
-
         $usersSnapshot = $usersRef->getValue();
         $paymentsSnapshot = $paymentsRef->getValue();
         $menuSnapshot = $menuRef->getValue();
 
 
         $user = $usersSnapshot[$orderSnapshot['userId']] ?? null;
+
 
         $paymentInfo = collect($paymentsSnapshot)->firstWhere('orderId', $orderId);
         $paymentMode = $paymentInfo['paymentMode'] ?? null;
@@ -199,16 +204,20 @@ class FirebaseService
         }
 
 
+        $orderStatus = $orderSnapshot['status'] ?? 'Unknown';
+        $statusDisplay = ($orderStatus === 'cancelled' && $paymentMode === 'GCash') ? 'For Refund' : $orderStatus;
+
+
         $orderDetails = [
             'orderId' => $orderId,
-            'totalPrice' => $orderSnapshot['totalPrice'],
-            'status' => $orderSnapshot['status'],
-            'orderDate' => $orderSnapshot['orderDate'],
-            'sitioStreet' => $orderSnapshot['address']['sitioStreet'],
-            'barangay' => $orderSnapshot['address']['barangay'],
-            'city' => $orderSnapshot['address']['city'],
+            'totalPrice' => $orderSnapshot['totalPrice'] ?? 0,
+            'status' => $statusDisplay,
+            'orderDate' => $orderSnapshot['orderDate'] ?? 'N/A',
+            'sitioStreet' => $orderSnapshot['address']['sitioStreet'] ?? 'N/A',
+            'barangay' => $orderSnapshot['address']['barangay'] ?? 'N/A',
+            'city' => $orderSnapshot['address']['city'] ?? 'N/A',
             'items' => $itemsWithDetails,
-            'request' => $orderSnapshot['request'],
+            'request' => $orderSnapshot['request'] ?? '',
             'user' => [
                 'username' => $user['username'] ?? 'Unknown User',
                 'fullname' => $user['fullname'] ?? 'Unknown User',
@@ -219,31 +228,32 @@ class FirebaseService
             ],
             'payment' => [
                 'totalAmount' => $paymentInfo['totalAmount'] ?? 0,
-                'paymentMode' => $paymentInfo['paymentMode'] ?? 0,
+                'paymentMode' => $paymentMode ?? 'Unknown',
                 'paymentStatus' => $paymentInfo['paymentStatus'] ?? 'Unknown',
-                'paymentDate' => $paymentInfo['paymentDate'] ?? null,
-                'receiptImageUrl' => ($paymentMode === 'GCash') ? $paymentInfo['receiptImageUrl'] : 'null',
+                'paymentDate' => $paymentInfo['paymentDate'] ?? 'N/A',
+                'receiptImageUrl' => ($paymentMode === 'GCash') ? ($paymentInfo['receiptImageUrl'] ?? 'null') : 'null',
             ]
         ];
 
         return $orderDetails;
     }
 
+
     public function sendNotificationToUser($fcmToken, $notificationData)
     {
-        // Create a test message to check the validity of the FCM token
-        $testMessage = CloudMessage::withTarget('token', $fcmToken)
-            ->withNotification([
-                'title' => 'Test Notification',
-                'body' => 'This is a test notification to validate the FCM token.',
-                'sound' => 'default',
-            ]);
+
+        // $testMessage = CloudMessage::withTarget('token', $fcmToken)
+        //     ->withNotification([
+        //         'title' => 'Test Notification',
+        //         'body' => 'This is a test notification to validate the FCM token.',
+        //         'sound' => 'default',
+        //     ]);
 
         try {
-            // Attempt to send the test message
-            $this->messaging->send($testMessage);
 
-            // If the test message is successfully sent, proceed with the actual notification
+            // $this->messaging->send($testMessage);
+
+
             $message = CloudMessage::withTarget('token', $fcmToken)
                 ->withNotification([
                     'title' => $notificationData['title'],
@@ -254,15 +264,15 @@ class FirebaseService
                     'orderId' => $notificationData['orderId'],
                 ]);
 
-            // Send the actual notification
+
             $this->messaging->send($message);
         } catch (\Kreait\Firebase\Exception\MessagingException $e) {
-            // Check if the error is due to an invalid token
+
             if (
                 $e->getCode() === 'messaging/invalid-registration-token' ||
                 $e->getCode() === 'messaging/not-found'
             ) {
-                // Remove the invalid token from your database
+
                 $this->removeInvalidFcmToken($fcmToken);
             } else {
                 throw new \Exception('FCM Send Error: ' . $e->getMessage());
@@ -272,28 +282,28 @@ class FirebaseService
 
     private function removeInvalidFcmToken($fcmToken)
     {
-        // Logic to remove the invalid token from your database
-        $userId = $this->getUserIdFromToken($fcmToken); // Retrieve the user ID associated with the token
+
+        $userId = $this->getUserIdFromToken($fcmToken);
         if ($userId) {
             $userReference = $this->database->getReference("users/{$userId}");
             $userReference->update([
-                'fcmToken' => null // Set fcmToken to null or remove it
+                'fcmToken' => null
             ]);
         }
     }
 
     private function getUserIdFromToken($fcmToken)
     {
-        // Logic to retrieve the user ID associated with the FCM token from your database
+
         $users = $this->database->getReference('users')->getValue();
 
         foreach ($users as $userId => $user) {
             if (isset($user['fcmToken']) && $user['fcmToken'] === $fcmToken) {
-                return $userId; // Return the user ID if the FCM token matches
+                return $userId;
             }
         }
 
-        return null; // Return null if no user is found with the given token
+        return null;
     }
 
 

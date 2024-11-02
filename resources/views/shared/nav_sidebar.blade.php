@@ -98,6 +98,15 @@
         </li>
         @endif
 
+        @if (isset($permissions['manage_for_cancelled_orders']) && $permissions['manage_for_cancelled_orders'])
+        <li>
+            <a href="{{ route('cancelled_orders.paginated') }}">
+                <span class="icon"><i class="fa-solid fa-xmark"></i></span>
+                <span class="menu-item-label">Cancelled Orders</span>
+            </a>
+        </li>
+        @endif
+
         @if (isset($permissions['manage_messages']) && $permissions['manage_messages'])
         <li>
             <a href="{{ route('chats.show') }}">

@@ -1,4 +1,8 @@
-// Firebase configuration
+"use strict";
+import { initializeApp } from "firebase/app";
+import { getDatabase, ref, get } from "firebase/database";
+import Chart from "chart.js/auto";
+
 const firebaseConfig = {
     apiKey: "AIzaSyDtsmGee-3Uj6ZkCMiBlpqBAm67-K4jrp8",
     authDomain: "bossupgrade-101.firebaseapp.com",
@@ -10,17 +14,22 @@ const firebaseConfig = {
     measurementId: "G-28ED8WK9K7",
 };
 
-// Initialize Firebase
-firebase.initializeApp(firebaseConfig);
-
-// Get the reference to the 'menu' node in the Firebase Realtime Database
-const menuRef = firebase.database().ref("menu");
+const app = initializeApp(firebaseConfig);
+const database = getDatabase(app);
 
 // Fetch data from Firebase
-menuRef
-    .once("value")
+const menuRef = ref(database, "menu");
+
+get(menuRef)
     .then((snapshot) => {
         const menuData = snapshot.val();
+        console.log("Menu Data:", menuData); // Debugging line
+
+        if (!menuData) {
+            console.error("No menu data available."); // Error handling
+            return;
+        }
+
         const itemsArray = Object.values(menuData);
 
         // Sort items by soldCount in descending order
@@ -33,16 +42,8 @@ menuRef
         const chartData = topItems.map((item) => item.soldCount);
         const chartLabels = topItems.map((item) => item.name);
 
-        // Chart configuration
-        var chartColors = {
-            default: {
-                primary: "#00D1B2",
-                info: "#209CEE",
-                danger: "#FF3860",
-                warning: "#FFDD57",
-                success: "#00D1F5",
-            },
-        };
+        console.log("Chart Data:", chartData); // Debugging line
+        console.log("Chart Labels:", chartLabels); // Debugging line
 
         var ctx = document.getElementById("chart").getContext("2d");
         new Chart(ctx, {
@@ -52,11 +53,11 @@ menuRef
                     {
                         data: chartData,
                         backgroundColor: [
-                            chartColors.default.primary,
-                            chartColors.default.info,
-                            chartColors.default.danger,
-                            chartColors.default.warning,
-                            chartColors.default.success,
+                            "#00D1B2",
+                            "#209CEE",
+                            "#FF3860",
+                            "#FFDD57",
+                            "#00D1F5",
                         ],
                     },
                 ],
@@ -85,3 +86,82 @@ menuRef
     .catch((error) => {
         console.error("Error fetching data: ", error);
     });
+
+function getMetrics() {
+    const usersRef = ref(database, "users");
+    const menuRef = ref(database, "menu");
+    const ordersRef = ref(database, "orders");
+
+    // Get the number of users
+    get(usersRef)
+        .then((snapshot) => {
+            if (snapshot.exists()) {
+                const userCount = snapshot.size || snapshot.numChildren();
+                document.getElementById("metrics-users").textContent =
+                    userCount;
+            } else {
+                console.log("No users found");
+            }
+        })
+        .catch((error) => console.error("Error fetching users:", error));
+
+    // Get number of menu items
+    get(menuRef)
+        .then((snapshot) => {
+            if (snapshot.exists()) {
+                const menuCount = snapshot.size || snapshot.numChildren();
+                document.querySelector(
+                    ".metrics-cards:nth-child(2) p:nth-child(2)"
+                ).textContent = menuCount;
+            } else {
+                console.log("No menu items found");
+            }
+        })
+        .catch((error) => console.error("Error fetching menu items:", error));
+
+    // Get number of completed orders
+    get(ordersRef)
+        .then((snapshot) => {
+            if (snapshot.exists()) {
+                let ratedCount = 0;
+
+                snapshot.forEach((orderSnapshot) => {
+                    const status = orderSnapshot.val().status;
+                    if (status === "pending") {
+                        ratedCount++;
+                    }
+                });
+
+                document.querySelector(
+                    ".metrics-cards:nth-child(3) p:nth-child(2)"
+                ).textContent = ratedCount;
+            } else {
+                console.log("No orders found");
+            }
+        })
+        .catch((error) => console.error("Error fetching orders:", error));
+
+    // Get number of completed orders
+    get(ordersRef)
+        .then((snapshot) => {
+            if (snapshot.exists()) {
+                let ratedCount = 0;
+
+                snapshot.forEach((orderSnapshot) => {
+                    const status = orderSnapshot.val().status;
+                    if (status === "rated") {
+                        ratedCount++;
+                    }
+                });
+
+                document.querySelector(
+                    ".metrics-cards:nth-child(4) p:nth-child(2)"
+                ).textContent = ratedCount;
+            } else {
+                console.log("No orders found");
+            }
+        })
+        .catch((error) => console.error("Error fetching orders:", error));
+}
+
+window.onload = getMetrics;

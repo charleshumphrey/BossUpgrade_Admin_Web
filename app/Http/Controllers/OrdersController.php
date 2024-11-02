@@ -55,6 +55,13 @@ class OrdersController extends Controller
 
         return view('orders_pending', ['pendingOrders' => $pendingOrders]);
     }
+    public function showCancelledOrders(Request $request)
+    {
+        $currentPage = $request->get('page', 1);
+        $cancelledOrders = $this->firebaseService->getOrdersWithMenuDetails(10, $currentPage, "cancelled");
+
+        return view('orders_cancelled', ['cancelledOrders' => $cancelledOrders]);
+    }
     public function confirmOrder(Request $request, $orderId)
     {
         $ordersRef = $this->firebaseService->getDatabase()->getReference('orders/' . $orderId);

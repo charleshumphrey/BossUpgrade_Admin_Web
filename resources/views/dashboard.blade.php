@@ -9,7 +9,6 @@
     <script src="https://www.gstatic.com/firebasejs/9.1.3/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.1.3/firebase-database.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js/dist/chart.umd.js"></script>
 
     @vite('resources/css/app.css')
     @vite('resources/js/app.js')
@@ -53,7 +52,7 @@
 
             <div class="flex flex-col md:flex-row md:gap-5 w-full">
 
-                <div class="card my-5 flex-1">
+                <!-- <div class="card my-5 flex-1">
                     <header class="card-header">
                         <p class="card-header-title">
                             <span class="icon"><i class="mdi mdi-finance"></i></span>
@@ -79,7 +78,7 @@
                             </div>
                         </div>
                     </div>
-                </div>
+                </div> -->
 
                 <div class="card my-5 flex-1">
                     <header class="card-header">

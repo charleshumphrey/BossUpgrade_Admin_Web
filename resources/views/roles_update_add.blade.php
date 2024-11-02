@@ -142,6 +142,10 @@
                                 <label for="manage_for_delivery_orders" class="text-gray-600">Manage For Delivery Orders</label>
                             </div>
                             <div>
+                                <input type="checkbox" name="permissions[manage_for_cancelled_orders]" id="manage_for_cancelled_orders" value=true>
+                                <label for="manage_for_cancelled_orders" class="text-gray-600">Manage For Cancelled Orders</label>
+                            </div>
+                            <div>
                                 <input type="checkbox" name="permissions[manage_messages]" id="manage_messages" value=true>
                                 <label for="manage_messages" class="text-gray-600">Manage Messages</label>
                             </div>
