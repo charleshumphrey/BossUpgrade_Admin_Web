@@ -42,7 +42,9 @@ return [
         //     'synchronous' => null,
         // ],
         'dummy' => [
-            'driver' => 'array',
+            'driver' => 'sqlite',
+            'database' => ':memory:',
+            'prefix' => '',
         ],
 
 
