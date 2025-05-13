@@ -41,14 +41,14 @@
         @include('shared.success')
 
         <div class="flex flex-grow gap-5">
-            <div class="card w-1/3 shadow-lg border border-gray-200">
+            <div class="card w-1/3 shadow-lg border border-gray-200 overflow-hidden" style="height:77vh;">
                 <header class="card-header text-gray-700">
                     <p class="card-header-title">
                         <span class="icon mr-2"><i class="fa-solid fa-users"></i></span>
                         Users
                     </p>
                 </header>
-                <div class="card-content flex flex-col p-4 overflow-y-auto max-h-96 space-y-2">
+                <div class="card-content flex flex-col p-4 overflow-y-scroll space-y-2 h-full">
                     @foreach ($users as $userId => $user)
                     <button class="flex items-center gap-3 p-3 rounded-lg bg-blue-50 hover:bg-blue-100 transition-colors duration-200 cursor-pointer"
                         onclick="loadMessages('{{ $userId }}')">
@@ -69,8 +69,8 @@
                         Chat Messages
                     </p>
                 </header>
-                <div class="card-content overflow-hidden p-4" id="chatMessages">
-                    <div class="h-80 overflow-y-auto bg-white p-4 rounded-lg shadow-inner border border-gray-200" id="chatMessagesContainer">
+                <div class="card-content overflow-hidden p-4 h-full" id="chatMessages">
+                    <div class="h-full overflow-y-auto bg-white p-4 rounded-lg shadow-inner border border-gray-200" id="chatMessagesContainer">
                         <p class="text-gray-500">Select a user to view messages.</p>
                     </div>
                 </div>

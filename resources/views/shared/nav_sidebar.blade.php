@@ -125,14 +125,14 @@
         </li>
         @endif
 
-        @if (isset($permissions['manage_promotions']) && $permissions['manage_promotions'])
+        <!-- @if (isset($permissions['manage_promotions']) && $permissions['manage_promotions'])
         <li>
             <a href="{{ route('promotions.index') }}">
                 <span class="icon"><i class="fa-solid fa-rectangle-ad"></i></span>
                 <span class="menu-item-label">Promotions</span>
             </a>
         </li>
-        @endif
+        @endif -->
 
         @if (isset($permissions['manage_faqs']) && $permissions['manage_faqs'])
         <li>

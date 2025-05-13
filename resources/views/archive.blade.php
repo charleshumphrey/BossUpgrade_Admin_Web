@@ -90,7 +90,7 @@
                                     <!-- <a href="{{ route('menu-items.edit', $item['menuId']) }}" class="button small green">
                                         <span class="icon"><i class="fa-solid fa-pen-to-square"></i></span>
                                     </a> -->
-                                    <button class="button small blue --jb-modal" data-target="archive-modal{{ $item['menuId'] }}" type="button">
+                                    <button class="button small blue --jb-modal" data-target="unarchive-modal{{$item['menuId']}}" type="button">
                                         <span class="icon"><i class="mdi mdi-package-up"></i></span>
                                     </button>
                                     <button class="button small red --jb-modal" data-target="delete-modal{{$item['menuId']}}" type="button">
@@ -100,7 +100,7 @@
                             </td>
                         </tr>
 
-                        <div id="delete-modal{{ $item['menuId'] }}" class="modal hidden">
+                        <div id="delete-modal{{$item['menuId']}}" class="modal hidden">
                             <div class="modal-background --jb-modal-close"></div>
                             <div class="modal-card">
                                 <header class="modal-card-head">
@@ -120,6 +120,29 @@
                                 </footer>
                             </div>
                         </div>
+
+                        <div id="unarchive-modal{{ $item['menuId'] }}" class="modal hidden">
+                            <div class="modal-background --jb-modal-close"></div>
+                            <div class="modal-card">
+                                <header class="modal-card-head">
+                                    <i class="fa-solid fa-box-open text-green-500 mr-4"></i>
+                                    <p class="modal-card-title text-black">Confirm <span class="text-green-500">Unarchive</span></p>
+                                </header>
+                                <section class="modal-card-body text-gray-700">
+                                    <p>Are you sure you want to <span class="text-green-500">restore</span> this item from the archive? This action will make the item visible to users again.</p>
+                                </section>
+                                <footer class="modal-card-foot justify-end">
+                                    <button id="cancel-unarchive" class="button --jb-modal-close">Cancel</button>
+                                    <form id="unarchiveForm" action="{{ route('archive.restore', $item['menuId']) }}" method="POST" class="inline-block ml-4">
+                                        @csrf
+                                        @method('PATCH')
+                                        <button type="submit" id="confirm-unarchive" class="button green archive-confirm">Confirm</button>
+                                    </form>
+                                </footer>
+                            </div>
+                        </div>
+
+
                         @empty
                         <tr>
                             <td colspan="7" class="px-6 py-4  text-center">Archive is empty.</td>

@@ -23,15 +23,15 @@ class FeedbackController extends Controller
     {
         $database = $this->firebaseService->getDatabase();
 
-        // Retrieve users, orders, and menu data from Firebase
-        $users = $database->getReference('users')->getValue();
-        $orders = $database->getReference('orders')->getValue();
-        $menu = $database->getReference('menu')->getValue();
+        // Retrieve users, orders, and menu data from Firebase with null-checking
+        $users = $database->getReference('users')->getValue() ?? [];
+        $orders = $database->getReference('orders')->getValue() ?? [];
+        $menu = $database->getReference('menu')->getValue() ?? [];
 
         // Filter the orders to find those that have been rated
         $ratedOrders = [];
         foreach ($orders as $orderId => $order) {
-            if ($order['status'] === 'rated') {
+            if (isset($order['status']) && $order['status'] === 'rated') {
                 $ratedOrders[$orderId] = $order;
             }
         }

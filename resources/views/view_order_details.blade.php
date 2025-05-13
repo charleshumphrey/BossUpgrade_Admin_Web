@@ -27,7 +27,6 @@
         </div>
         @include('shared.nav_sidebar')
     </div>
-
     <section class="is-title-bar">
         <div class="flex flex-col md:flex-row items-center justify-between space-y-6 md:space-y-0">
             <ul>
@@ -76,9 +75,14 @@
                     <p class="text-gray-700"><strong>Payment Method:</strong> <span class="font-semibold text-blue-600">{{ ucfirst($orderDetails['payment']['paymentMode']) }}</span></p>
                     @if ($orderDetails['payment']['receiptImageUrl'] !== 'null')
                     <p class="text-gray-700"><strong>Receipt:</strong></p>
-                    <img src="{{ asset($orderDetails['payment']['receiptImageUrl']) }}" alt="Receipt Image" class="mt-2 rounded-md border border-gray-300" width="200">
+                    <img src="{{ asset($orderDetails['payment']['receiptImageUrl']) }}" alt="Receipt Image" class="mt-2 rounded-md border border-gray-300" width="500">
                     @else
                     <p class="text-gray-700"><strong>Receipt:</strong> No receipt available for Cash on Delivery.</p>
+                    @endif
+                    @if ($orderDetails['payment']['referenceNo'] !== 'null')
+                    <p class="text-gray-700"><strong>Reference No.: </strong>{{$orderDetails['payment']['referenceNo']}}</p>
+                    @else
+                    <p class="text-gray-700"><strong>Reference No.:</strong> No reference number available for Cash on Delivery.</p>
                     @endif
                 </div>
             </div>

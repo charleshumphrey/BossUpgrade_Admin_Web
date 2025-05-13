@@ -255,6 +255,12 @@ Route::delete(
     [ArchiveController::class, 'destroy']
 )->name('archive.destroy');
 
+Route::patch(
+    '/archive/{menuId}/restore',
+    [ArchiveController::class, 'unarchive']
+)->name('archive.restore');
+
+
 //FAQs
 Route::get(
     '/faq',

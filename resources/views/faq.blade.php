@@ -105,7 +105,7 @@
                             {{ $faq['answer'] }}
                         </div>
 
-                        <!-- Delete FAQ Form -->
+
                         <div class="p-4">
                             <form action="{{ route('faqs.destroy', $key) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this FAQ?');">
                                 @csrf
@@ -127,7 +127,6 @@
         </div>
     </section>
 
-    <!-- Icons below are for demo only. Feel free to use any icon pack. Docs: https://bulma.io/documentation/elements/icon/ -->
     <link rel="stylesheet" href="https://cdn.materialdesignicons.com/4.9.95/css/materialdesignicons.min.css">
 </body>
 

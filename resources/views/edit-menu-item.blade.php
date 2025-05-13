@@ -143,8 +143,8 @@
                         @enderror
                     </div>
 
-                    <button type="submit" class="btn btn-primary">Update Menu Item</button>
-                    <a href="{{ route('menu-items') }}" class="btn btn-secondary">Cancel</a>
+                    <button type="submit" class="btn bg-primary-color p-3 text-white rounded-md">Update Menu Item</button>
+                    <a href="{{ route('menu-items') }}" class="btn btn-secondary p-3 rounded-md border border-gray-400 bg-gray-100">Cancel</a>
                 </form>
             </div>
         </div>

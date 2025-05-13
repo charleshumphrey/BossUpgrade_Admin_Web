@@ -153,10 +153,10 @@
                                 <input type="checkbox" name="permissions[manage_faqs]" id="manage_faqs" value=true>
                                 <label for="manage_faqs" class="text-gray-600">Manage FAQs</label>
                             </div>
-                            <div>
+                            <!-- <div>
                                 <input type="checkbox" name="permissions[manage_promotions]" id="manage_promotions" value=true>
                                 <label for="manage_promotions" class="text-gray-600">Manage Promotions</label>
-                            </div>
+                            </div> -->
                             <div>
                                 <input type="checkbox" name="permissions[manage_feedback]" id="manage_feedback" value=true>
                                 <label for="manage_feedback" class="text-gray-600">Manage Feedbacks</label>

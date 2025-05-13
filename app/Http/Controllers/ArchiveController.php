@@ -22,13 +22,12 @@ class ArchiveController extends Controller
     {
         $database = $this->firebaseService->getDatabase();
 
-        // Retrieve the menu and category data from Firebase
-        $menuData = $database->getReference('archives/menu')->getValue() ?? [];  // Assign an empty array if null
+        $menuData = $database->getReference('archives/menu')->getValue() ?? [];
         $categoriesSnapshot = $database->getReference('categories')->getValue();
 
         $selectedCategoryId = $request->input('category');
 
-        // Filter the menu data by category if a category is selected
+
         if ($selectedCategoryId && $categoriesSnapshot) {
             $filteredMenu = [];
 
@@ -42,7 +41,7 @@ class ArchiveController extends Controller
             $menuData = $filteredMenu;
         }
 
-        // Build the category list for the dropdown
+
         $categories = [];
         if ($categoriesSnapshot) {
             foreach ($categoriesSnapshot as $categoryId => $categoryData) {
@@ -55,14 +54,14 @@ class ArchiveController extends Controller
             }
         }
 
-        // Sort the menu data by time_added if it's not empty
+
         if (!empty($menuData)) {
             usort($menuData, function ($a, $b) {
                 return $b['time_added'] <=> $a['time_added'];
             });
         }
 
-        // Paginate the data
+
         $collection = collect($menuData);
         $currentPage = LengthAwarePaginator::resolveCurrentPage();
         $perPage = 10;
@@ -95,5 +94,32 @@ class ArchiveController extends Controller
         } catch (\Exception $e) {
             return redirect()->route('archive.index')->with('error', 'Failed to Category.');
         }
+    }
+
+    public function unarchive($menuId)
+    {
+        $database = $this->firebaseService->getDatabase();
+
+
+        $menuItem = $database->getReference('archives/menu/' . $menuId)->getValue();
+
+
+        if (!$menuItem) {
+            return response()->json(['success' => false, 'message' => 'Archived menu item not found'], 404);
+        }
+
+
+        $categoryId = $menuItem['category'];
+
+
+        $database->getReference('menu/' . $menuId)->set($menuItem);
+
+
+        $database->getReference('categories/' . $categoryId . '/menuIds/' . $menuId)->set(true);
+
+
+        $database->getReference('archives/menu/' . $menuId)->remove();
+
+        return redirect()->route('archive')->with('success', 'Menu Item successfully restored from the archive.');
     }
 }

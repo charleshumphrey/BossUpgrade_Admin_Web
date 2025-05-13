@@ -230,6 +230,7 @@ class FirebaseService
                 'totalAmount' => $paymentInfo['totalAmount'] ?? 0,
                 'paymentMode' => $paymentMode ?? 'Unknown',
                 'paymentStatus' => $paymentInfo['paymentStatus'] ?? 'Unknown',
+                'referenceNo' => $paymentInfo['referenceNumber'] ?? 'null',
                 'paymentDate' => $paymentInfo['paymentDate'] ?? 'N/A',
                 'receiptImageUrl' => ($paymentMode === 'GCash') ? ($paymentInfo['receiptImageUrl'] ?? 'null') : 'null',
             ]
