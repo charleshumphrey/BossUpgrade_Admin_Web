@@ -16,7 +16,7 @@ return [
     |
     */
 
-    'default' => env('DB_CONNECTION', 'none'),
+    'default' => env('DB_CONNECTION', 'dummy'),
 
     /*
     |--------------------------------------------------------------------------
@@ -41,6 +41,10 @@ return [
         //     'journal_mode' => null,
         //     'synchronous' => null,
         // ],
+        'dummy' => [
+            'driver' => 'array',
+        ],
+
 
         'mysql' => [
             'driver' => 'mysql',
