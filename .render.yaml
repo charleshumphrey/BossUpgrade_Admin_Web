@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: laravel-firebase-app
+    env: docker
+    plan: free
+    region: oregon
+    dockerContext: .
+    dockerfilePath: Dockerfile
+    buildCommand: ""
+    startCommand: ""
