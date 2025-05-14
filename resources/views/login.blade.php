@@ -8,7 +8,7 @@
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     @vite('resources/css/app.css')
-    @vite('resources/css/all.min.css')
+    <!-- @vite('resources/css/all.min.css') -->
     @vite('resources/css/fontawesome.min.css')
     @vite('resources/js/app.js')
     @vite('resources/js/app.js')
