@@ -1,13 +1,13 @@
 # Start from PHP-FPM base image
 FROM php:8.2-fpm
 
-# Install system dependencies and PHP extensions
+# Install system dependencies
 RUN apt-get update && apt-get install -y \
     libpng-dev libjpeg-dev libfreetype6-dev zip git unzip curl nginx supervisor \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install gd
+    && docker-php-ext-install gd pdo pdo_mysql
 
-# Set working directory
+# Set the working directory
 WORKDIR /var/www
 
 # Install Composer

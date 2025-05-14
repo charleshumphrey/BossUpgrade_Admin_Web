@@ -1,5 +1,3 @@
-node_modules
-vendor
-.env
-storage/*.key
-firebase_credentials.json
+/vendor
+/node_modules
+/.env
