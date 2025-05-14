@@ -1,4 +1,20 @@
-# Start from PHP-FPM base image
+# ────── Stage 1: Node build ──────
+FROM node:18-alpine AS node-builder
+
+WORKDIR /app
+
+# Install Node dependencies
+COPY package*.json ./
+RUN npm ci
+
+# Copy source files for Vite build
+COPY . .
+
+# Run Vite production build
+RUN npm run build
+
+
+# ────── Stage 2: PHP-FPM and Laravel ──────
 FROM php:8.2-fpm
 
 # Install system dependencies
@@ -16,10 +32,13 @@ RUN curl -sS https://getcomposer.org/installer | php && \
     mv composer.phar /usr/local/bin/composer && \
     composer install --no-dev --no-scripts --optimize-autoloader
 
-# Copy the rest of the app
+# Copy app source (excluding node_modules etc. from .dockerignore)
 COPY . .
 
-# Run composer scripts now that artisan exists
+# Copy built Vite assets from node build stage
+COPY --from=node-builder /app/public/build ./public/build
+
+# Run post-install Composer actions
 RUN composer dump-autoload --optimize && \
     php artisan package:discover || true
 
@@ -34,5 +53,5 @@ COPY render/supervisord.conf /etc/supervisord.conf
 # Expose HTTP port
 EXPOSE 80
 
-# Start both Nginx and PHP-FPM using supervisord
+# Start services
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisord.conf"]
