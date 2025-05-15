@@ -2,7 +2,7 @@
 
 
 return [
-    'credentials' => env('FIREBASE_CREDENTIALS', '/etc/secrets/firebase_credentials.json'),
+    'credentials' => env('FIREBASE_CREDENTIALS_PATH', '/etc/secrets/firebase_credentials.json'),
     'database_url' => env('FIREBASE_DATABASE_URL', 'https://bossupgrade-101-default-rtdb.firebaseio.com'),
     'api_key' => env('FIREBASE_API_KEY'),
     'auth_domain' => env('FIREBASE_AUTH_DOMAIN'),
