@@ -15,11 +15,26 @@ class FirebaseService
 
     public function __construct()
     {
-        $credentials = config('firebase.credentials');
+        $base64 = env('FIREBASE_CREDENTIALS_BASE64');
         $databaseUrl = config('firebase.database_url');
 
+        if (!$base64) {
+            throw new \Exception("Missing Firebase credentials");
+        }
+
+        // Decode base64 string
+        $decodedJson = base64_decode($base64);
+
+        // Convert JSON to array
+        $credentialsArray = json_decode($decodedJson, true);
+
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            throw new \Exception("Invalid Firebase credentials JSON");
+        }
+
+        // Initialize Firebase using array credentials
         $firebase = (new Factory)
-            ->withServiceAccount($credentials)
+            ->withServiceAccount($credentialsArray)
             ->withDatabaseUri($databaseUrl);
 
         $this->database = $firebase->createDatabase();
