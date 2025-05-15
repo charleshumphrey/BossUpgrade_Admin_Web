@@ -1,18 +1,13 @@
 #!/bin/bash
 set -e
 
-echo "🔥 Preparing Firebase credentials"
+echo "🔥 Decoding Firebase credentials from environment"
 
-if [ -f "/etc/secrets/firebase_credentials.json" ]; then
-    echo "⚠️ Copying firebase_credentials.json to writable /tmp directory"
-    cp /etc/secrets/firebase_credentials.json /tmp/firebase_credentials.json
-    chmod 600 /tmp/firebase_credentials.json
-else
-    echo "⚠️  /etc/secrets/firebase_credentials.json not found at runtime"
-fi
-
-echo "Checking /tmp directory..."
-ls -ld /tmp
+# CLEAR ALL CACHES BEFORE CREATING THEM
+php artisan config:clear
+php artisan cache:clear
+php artisan route:clear
+php artisan view:clear
 
 echo "⚙️ Caching Laravel configs..."
 php artisan config:cache
