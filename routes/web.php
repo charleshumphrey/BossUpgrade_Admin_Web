@@ -12,6 +12,7 @@ use App\Http\Controllers\PromotionsController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\StaffController;
 use App\Http\Controllers\UserController;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
 
 
@@ -304,10 +305,9 @@ Route::get('/debug-firebase', function () {
     ]);
 });
 
-Route::get('/check-firebase', function () {
-    $path = env('FIREBASE_CREDENTIALS', '/etc/secrets/firebase_credentials.json');
-    return [
-        'exists' => file_exists($path),
-        'readable' => is_readable($path),
-    ];
+Route::get('/clear-config', function () {
+    Artisan::call('config:clear');
+    Artisan::call('cache:clear');
+    Artisan::call('config:cache');
+    return '✅ Config and cache cleared!';
 });
