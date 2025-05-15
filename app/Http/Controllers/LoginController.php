@@ -38,25 +38,22 @@ class LoginController extends Controller
 
         $staffRef = $database->getReference('staff')->getValue();
 
-        if ($username == "admin" && $password == "admin123") {
-            return redirect()->route('dashboard');
+        foreach ($staffRef as $staffId => $staffData) {
+            if ($staffData['username'] === $username) {
+                if (Hash::check($password, $staffData['password'])) {
+
+                    $roleId = $staffData['roleId'];
+                    $roleData = $database->getReference('roles/' . $roleId)->getValue();
+
+                    Session::put('logged_in', true);
+                    Session::put('staffId', $staffId);
+                    Session::put('user', $staffData);
+                    Session::put('permissions', $roleData['permissions']);
+
+                    return redirect()->route('dashboard');
+                }
+            }
         }
-        // foreach ($staffRef as $staffId => $staffData) {
-        //     if ($staffData['username'] === $username) {
-        //         if (Hash::check($password, $staffData['password'])) {
-
-        //             $roleId = $staffData['roleId'];
-        //             $roleData = $database->getReference('roles/' . $roleId)->getValue();
-
-        //             Session::put('logged_in', true);
-        //             Session::put('staffId', $staffId);
-        //             Session::put('user', $staffData);
-        //             Session::put('permissions', $roleData['permissions']);
-
-        //             return redirect()->route('dashboard');
-        //         }
-        //     }
-        // }
 
         return redirect()->back()->with('error', 'Invalid credentials!');
     }
