@@ -18,7 +18,7 @@ class FirebaseService
         $serviceAccount = json_decode(env('FIREBASE_CREDENTIALS'), true);
 
         $firebase = (new Factory)
-            ->withServiceAccount("/etc/secrets/firebase_credentials.json")
+            ->withServiceAccount(config('firebase.credentials'))
             ->withDatabaseUri('https://bossupgrade-101-default-rtdb.firebaseio.com');
 
         $this->database = $firebase->createDatabase();
