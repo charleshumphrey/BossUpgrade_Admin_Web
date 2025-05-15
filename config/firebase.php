@@ -2,8 +2,8 @@
 
 
 return [
-    'credentials' => env('FIREBASE_CREDENTIALS', '/etc/secrets/firebase_credentials.json'),
-    'database_url' => env('FIREBASE_DATABASE_URL', 'https://bossupgrade-101-default-rtdb.firebaseio.com'),
+    'credentials' => null,
+    'database_url' => env('FIREBASE_CREDENTIALS_BASE64', 'https://bossupgrade-101-default-rtdb.firebaseio.com'),
     'api_key' => env('FIREBASE_API_KEY'),
     'auth_domain' => env('FIREBASE_AUTH_DOMAIN'),
     'project_id' => env('FIREBASE_PROJECT_ID'),

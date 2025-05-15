@@ -15,16 +15,25 @@ class FirebaseService
 
     public function __construct()
     {
-        $serviceAccount = json_decode(env('FIREBASE_CREDENTIALS'), true);
+        // Decode the base64 JSON string from env
+        $base64 = env('FIREBASE_CREDENTIALS_BASE64');
 
+        if (!$base64) {
+            throw new \Exception('FIREBASE_CREDENTIALS_BASE64 env variable is missing.');
+        }
+
+        $json = base64_decode($base64);
+
+        // Pass the JSON string directly to withServiceAccount()
         $firebase = (new Factory)
-            ->withServiceAccount(config('firebase.credentials'))
+            ->withServiceAccount($json)
             ->withDatabaseUri('https://bossupgrade-101-default-rtdb.firebaseio.com');
 
         $this->database = $firebase->createDatabase();
         $this->storage = $firebase->createStorage();
         $this->messaging = $firebase->createMessaging();
     }
+
 
     public function getDatabase(): Database
     {
