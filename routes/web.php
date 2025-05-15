@@ -292,3 +292,12 @@ Route::delete(
     '/promotions/{key}',
     [PromotionsController::class, 'destroy']
 )->name('promotions.destroy');
+
+Route::get('/debug-firebase', function () {
+    $path = config('firebase.credentials');
+    return response()->json([
+        'path' => $path,
+        'exists' => file_exists($path),
+        'readable' => is_readable($path),
+    ]);
+});
