@@ -295,9 +295,11 @@ Route::delete(
 
 Route::get('/debug-firebase', function () {
     $path = config('firebase.credentials');
+
     return response()->json([
         'path' => $path,
         'exists' => file_exists($path),
         'readable' => is_readable($path),
+        'permissions' => decoct(fileperms($path) & 0777),
     ]);
 });
