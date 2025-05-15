@@ -303,3 +303,11 @@ Route::get('/debug-firebase', function () {
         'permissions' => decoct(fileperms($path) & 0777),
     ]);
 });
+
+Route::get('/check-firebase', function () {
+    $path = env('FIREBASE_CREDENTIALS', '/etc/secrets/firebase_credentials.json');
+    return [
+        'exists' => file_exists($path),
+        'readable' => is_readable($path),
+    ];
+});
