@@ -53,5 +53,9 @@ COPY render/supervisord.conf /etc/supervisord.conf
 # Expose HTTP port
 EXPOSE 80
 
+# Set correct permissions for Firebase credentials
+RUN chmod 644 /etc/secrets/firebase_credentials.json && \
+    chown www-data:www-data /etc/secrets/firebase_credentials.json
+
 # Start services
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisord.conf"]
