@@ -13,8 +13,9 @@ use App\Http\Controllers\RoleController;
 use App\Http\Controllers\StaffController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
-
+use Kreait\Firebase\Factory;
 
 //login
 Route::get('/', function () {
@@ -295,14 +296,13 @@ Route::delete(
 )->name('promotions.destroy');
 
 Route::get('/debug-firebase', function () {
-    $path = config('firebase.credentials');
-
-    return response()->json([
-        'path' => $path,
-        'exists' => file_exists($path),
-        'readable' => is_readable($path),
-        'permissions' => decoct(fileperms($path) & 0777),
-    ]);
+    try {
+        $firebase = (new Factory)->withServiceAccount(env('GOOGLE_APPLICATION_CREDENTIALS'));
+        return '✅ Firebase initialized successfully';
+    } catch (\Throwable $e) {
+        Log::error('❌ Firebase init failed', ['error' => $e->getMessage()]);
+        return '❌ Firebase init error: ' . $e->getMessage();
+    }
 });
 
 Route::get('/clear-config', function () {
