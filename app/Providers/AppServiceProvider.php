@@ -18,16 +18,5 @@ class AppServiceProvider extends ServiceProvider
         });
     }
 
-    public function boot()
-    {
-        $path = json_decode(base64_decode(env('FIREBASE_CREDENTIALS_BASE64', '')), true);
-
-        Log::info('🔥 Firebase Credentials Debug', [
-            'path' => $path,
-            'file_exists' => file_exists($path),
-            'is_readable' => is_readable($path),
-            'can_open' => is_file($path) && fopen($path, 'r') !== false,
-            'content_snippet' => file_exists($path) ? substr(file_get_contents($path), 0, 100) : 'File missing',
-        ]);
-    }
+    public function boot() {}
 }
