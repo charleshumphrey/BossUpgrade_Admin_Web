@@ -14,7 +14,7 @@ return [
     |
     */
     'firebase' => [
-        'credentials' => env('GOOGLE_APPLICATION_CREDENTIALS'),
+        'credentials' => json_decode(base64_decode(env('FIREBASE_CREDENTIALS_BASE64', '')), true),
         'api_key' => env('FIREBASE_API_KEY'),
         'auth_domain' => env('FIREBASE_AUTH_DOMAIN'),
         'database_url' => env('FIREBASE_DATABASE_URL'),

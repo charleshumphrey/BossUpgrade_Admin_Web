@@ -20,7 +20,7 @@ class AppServiceProvider extends ServiceProvider
 
     public function boot()
     {
-        $path = env('GOOGLE_APPLICATION_CREDENTIALS');
+        $path = json_decode(base64_decode(env('FIREBASE_CREDENTIALS_BASE64', '')), true);
 
         Log::info('🔥 Firebase Credentials Debug', [
             'path' => $path,

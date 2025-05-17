@@ -297,7 +297,7 @@ Route::delete(
 
 Route::get('/debug-firebase', function () {
     try {
-        $firebase = (new Factory)->withServiceAccount(env('GOOGLE_APPLICATION_CREDENTIALS'));
+        $firebase = (new Factory)->withServiceAccount(json_decode(base64_decode(env('FIREBASE_CREDENTIALS_BASE64', '')), true),);
         return '✅ Firebase initialized successfully';
     } catch (\Throwable $e) {
         Log::error('❌ Firebase init failed', ['error' => $e->getMessage()]);
