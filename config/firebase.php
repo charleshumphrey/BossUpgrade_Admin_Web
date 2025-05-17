@@ -2,7 +2,7 @@
 
 
 return [
-    'credentials' => json_decode(base64_decode(env('FIREBASE_CREDENTIALS_BASE64', '')), true),
+    'credentials' => json_decode(base64_decode(env('FIREBASE_CREDENTIALS_BASE64')), true),
     'database_url' => env('FIREBASE_DATABASE_URL', 'https://bossupgrade-101-default-rtdb.firebaseio.com'),
     'api_key' => env('FIREBASE_API_KEY'),
     'auth_domain' => env('FIREBASE_AUTH_DOMAIN'),
