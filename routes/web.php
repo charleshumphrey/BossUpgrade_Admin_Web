@@ -297,8 +297,31 @@ Route::delete(
 
 Route::get('/debug-firebase', function () {
     try {
-        $firebase = (new Factory)->withServiceAccount(json_decode(base64_decode(env('FIREBASE_CREDENTIALS_BASE64', '')), true),);
-        return '✅ Firebase initialized successfully';
+        $base64 = env('FIREBASE_CREDENTIALS_BASE64', '');
+
+        if (empty($base64)) {
+            throw new \Exception('FIREBASE_CREDENTIALS_BASE64 is empty.');
+        }
+
+        $decoded = base64_decode($base64);
+
+        if ($decoded === false) {
+            throw new \Exception('Base64 decode failed.');
+        }
+
+        $credentials = json_decode($decoded, true);
+
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            throw new \Exception('Invalid JSON in decoded credentials: ' . json_last_error_msg());
+        }
+
+        $firebase = (new Factory)
+            ->withServiceAccount($credentials);
+
+        // Try accessing a service to verify
+        $auth = $firebase->createAuth();
+
+        return '✅ Firebase initialized successfully and Auth service is accessible.';
     } catch (\Throwable $e) {
         Log::error('❌ Firebase init failed', ['error' => $e->getMessage()]);
         return '❌ Firebase init error: ' . $e->getMessage();
